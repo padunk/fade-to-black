@@ -1,0 +1,285 @@
+import { Request, Response } from "express";
+import * as firebase from "firebase";
+import * as BusBoy from "busboy";
+import * as path from "path";
+import * as os from "os";
+import * as fs from "fs";
+import { v4 as uuidV4 } from "uuid";
+import { admin, db } from "../util/admin";
+import { ImgProfile } from "../util/types";
+
+// SIGN UP
+export const userSignUp = (req: Request, res: Response) => {
+    const newUser = {
+        email: req.body.email,
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+        userName: req.body.userName,
+    };
+
+    let userToken: string | undefined;
+    let userId: string | undefined;
+
+    db.doc(`users/${newUser.userName}`)
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+                res.status(400).json({
+                    userName: "this userName is already taken",
+                });
+                return;
+            } else {
+                return firebase
+                    .auth()
+                    .createUserWithEmailAndPassword(
+                        newUser.email,
+                        newUser.password
+                    )
+                    .catch((err) => {
+                        throw new Error(err);
+                    });
+            }
+        })
+        .then((data) => {
+            userId = data?.user?.uid;
+            return data?.user?.getIdToken();
+        })
+        .then((token) => {
+            userToken = token;
+            return db.doc(`users/${newUser.userName}`).set({
+                userName: newUser.userName,
+                email: newUser.email,
+                createdAt: new Date().getTime(),
+                imageURL:
+                    "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
+                userId: userId,
+            });
+        })
+        .then(() => {
+            return res.status(201).json({ userToken });
+        })
+        .catch((err) => {
+            console.log("err", err);
+            switch (err.code) {
+                case "auth/email-already-in-use":
+                    res.status(400).json({ error: err.message });
+                    break;
+                case "auth/weak-password":
+                    res.status(400).json({ error: err.message });
+                    break;
+                default:
+                    res.status(500).json({
+                        message: err.message,
+                        code: err.code,
+                        general: "Something went wrong, please try again",
+                    });
+                    break;
+            }
+        });
+};
+
+// LOGIN
+export const userLogIn = (req: Request, res: Response) => {
+    firebase
+        .auth()
+        .signInWithEmailAndPassword(req.body.email, req.body.password)
+        .then((data) => data.user?.getIdToken())
+        .then((token) => res.json({ token }))
+        .catch((err) => {
+            console.log("err", err);
+            switch (err.code) {
+                case "auth/wrong-password":
+                    res.status(400).json({ error: err.message });
+                    break;
+                default:
+                    res.status(500).json({
+                        message: err.message,
+                        code: err.code,
+                    });
+                    break;
+            }
+        });
+};
+
+export const uploadImageProfile = (req: any, res: Response) => {
+    const busboy = new BusBoy({ headers: req.headers });
+
+    let imageToBeUploaded: ImgProfile;
+
+    busboy.on(
+        "file",
+        (
+            _,
+            file: NodeJS.ReadableStream,
+            filename: string,
+            mimetype: string
+        ) => {
+            if (mimetype !== "image/jpeg" && mimetype !== "image/png") {
+                res.status(400).json({
+                    error: "Wrong file type, please use either jpg or png",
+                });
+                return;
+            }
+
+            const imageExtension = filename.match(/\w*$/);
+            const imageFilename = `${uuidV4()}.${imageExtension![0]}`;
+            const filepath = path.join(os.tmpdir(), imageFilename);
+            imageToBeUploaded = { filepath, mimetype };
+            file.pipe(fs.createWriteStream(filepath));
+        }
+    );
+
+    // https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4
+    busboy.on("finish", () => {
+        return admin
+            .storage()
+            .bucket()
+            .upload(imageToBeUploaded.filepath, {
+                resumable: false,
+                metadata: {
+                    metadata: {
+                        contentType: imageToBeUploaded.mimetype,
+                    },
+                },
+            })
+            .then((data) => {
+                // console.log("data", data[0].metadata);
+                const { bucket, name } = data[0].metadata;
+                const imageURL = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${name}?alt=media`;
+                return db
+                    .doc(`/users/${req.user.userName}`)
+                    .update({ imageURL });
+            })
+            .then(() => {
+                res.json({ message: "Image uploaded successfully " });
+            })
+            .catch((err) => {
+                res.status(500).json({ message: err.message });
+            });
+    });
+
+    busboy.end(req.rawBody);
+};
+
+// Add user details
+export const addUserDetails = (req: any, res: Response) => {
+    const userDetails = req.body;
+    userDetails.updatedAt = new Date().getTime();
+
+    db.doc(`/users/${req.user.userName}`)
+        .update(userDetails)
+        .then(() => {
+            res.json({ message: "Details added succesfully" });
+            return;
+        })
+        .catch((err) => {
+            console.log("err", err);
+            res.status(500).json({ error: err.code });
+            return;
+        });
+};
+
+// Get single user details
+export const getAuthenticatedUser = (req: any, res: Response) => {
+    let userData: any = {};
+
+    db.doc(`/users/${req.user.userName}`)
+        .get()
+        .then((doc) => {
+            if (doc.exists) {
+                userData.credentials = doc.data();
+                return db
+                    .collection("likes")
+                    .where("userName", "==", req.user.userName)
+                    .get();
+            }
+            throw new Error("User doesn't exists");
+        })
+        .then((data) => {
+            userData.likes = [];
+            data?.forEach((doc) => {
+                userData.likes.push(doc.data());
+            });
+            return db
+                .collection("notifications")
+                .where("recipient", "==", req.user.userName)
+                .orderBy("createdAt", "desc")
+                .limit(10)
+                .get();
+        })
+        .then((data) => {
+            userData.notifications = [];
+            data.forEach((doc) => {
+                userData.notifications.push({
+                    createdAt: doc.data().createdAt,
+                    notificationID: doc.id,
+                    read: doc.data().read,
+                    recipient: doc.data().recipient,
+                    sender: doc.data().sender,
+                    type: doc.data().type,
+                    whisperID: doc.data().whisperID,
+                });
+            });
+        })
+        .catch((err) => {
+            console.log("err", err);
+            res.status(500).json({ error: err.message });
+        });
+};
+
+export const getUserDetails = (req: Request, res: Response) => {
+    let userData: any = {};
+
+    db.doc(`/users/${req.params.userName}`)
+        .get()
+        .then((doc) => {
+            if (!doc.exists) {
+                res.status(404);
+                throw new Error("Users not found");
+            }
+            userData = doc.data();
+            return db
+                .collection("whispers")
+                .where("userName", "==", req.params.userName)
+                .orderBy("createdAt", "desc")
+                .get();
+        })
+        .then((data) => {
+            userData.whispers = [];
+            data.forEach((d) => {
+                userData.whispers.push({
+                    body: d.data().body,
+                    commentCount: d.data().commentCount,
+                    createdAt: d.data().createdAt,
+                    id: d.id,
+                    lifeTime: d.data().lifeTime,
+                    likeCount: d.data().likeCount,
+                    userImage: d.data().userImage,
+                    userName: d.data().userName,
+                });
+            });
+            res.json(userData);
+        })
+        .catch((err) => {
+            console.log("err", err);
+            res.status(500).json({ error: err.code });
+        });
+};
+
+export const markNotificationsRead = (req: Request, res: Response) => {
+    const batch = db.batch();
+
+    req.body.forEach((notifID: string) => {
+        const notifications = db.doc(`/notifications/${notifID}`);
+        batch.update(notifications, { read: true });
+    });
+    batch
+        .commit()
+        .then(() => {
+            res.json({ message: "Notificatons read" });
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: err.code });
+        });
+};
