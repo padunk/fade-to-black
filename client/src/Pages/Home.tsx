@@ -4,7 +4,10 @@ import Auth from "../Auth";
 
 const Home = () => {
     return (
-        <div className="flex flex-wrap">
+        <div
+            style={{ height: "calc(100vh - 72px)" }}
+            className="lg:flex flex-row justify-center items-center"
+        >
             <Hero />
             <Auth />
         </div>

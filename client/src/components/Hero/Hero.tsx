@@ -4,17 +4,26 @@ import background from "../../assets/images/hero.jpg";
 const Hero = () => {
     return (
         <div
-            className="relative w-screen rounded-md bg-no-repeat bg-cover bg-center flex justify-center"
+            className="relative h-1/2 w-full rounded-md bg-no-repeat bg-cover bg-center flex justify-center lg:min-h-full"
             style={{
                 backgroundImage: `url(${background})`,
-                height: "30vh",
             }}
         >
+            <svg
+                preserveAspectRatio="none"
+                viewBox="0 0 100 100"
+                className="absolute right-0 min-h-full w-32 -mr-16 hidden lg:block"
+                style={{ fill: "#1a202c" }}
+            >
+                <polygon points="0,0 50,0 100,100 50,100" />
+            </svg>
             <div
-                className="pl-4 pr-4 pt-8 font-bold text-lg text-orange-300"
+                className="pl-4 pr-4 pt-8 text-orange-200 w-full lg:pl-8"
                 style={{ backgroundColor: "rgba(0,0,0, 0.6)" }}
             >
-                <h1>Our Stories</h1>
+                <h1 className="font-bold text-4xl lg:text-6xl text-orange-400">
+                    Our Stories
+                </h1>
                 <p>is all about what we write now and</p>
                 <p>what will be forgotten soon...</p>
             </div>
