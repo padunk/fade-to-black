@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as express from "express";
+import * as cors from "cors";
 import * as firebase from "firebase";
 import { firebaseConfig } from "./secret";
 import { firebaseAuth } from "./util/middleware";
@@ -32,6 +33,8 @@ import {
 firebase.initializeApp(firebaseConfig);
 
 const app = express();
+
+app.use(cors({ origin: true }));
 
 // WHISPER
 // Get all whisper
