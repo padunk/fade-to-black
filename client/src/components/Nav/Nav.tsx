@@ -8,12 +8,12 @@ const Navbar = () => {
             <div>
                 <img src={logo} width={40} height={40} alt="logo" />
             </div>
-            <ul className="flex flex-row gap-2">
+            <ul className="flex flex-row gap-2 lg:gap-6 lg:pr-4 font-medium">
                 <li>
-                    <Link to="/">Home</Link>{" "}
+                    <Link to="/">HOME</Link>{" "}
                 </li>
                 <li>
-                    <Link to="/About">About</Link>{" "}
+                    <Link to="/About">ABOUT</Link>{" "}
                 </li>
             </ul>
         </div>
