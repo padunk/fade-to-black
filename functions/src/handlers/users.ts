@@ -223,6 +223,7 @@ export const getAuthenticatedUser = (req: any, res: Response) => {
                     whisperID: doc.data().whisperID,
                 });
             });
+            res.json(userData);
         })
         .catch((err) => {
             console.log("err", err);
