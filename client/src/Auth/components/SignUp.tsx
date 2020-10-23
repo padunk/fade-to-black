@@ -13,7 +13,7 @@ const SignUpSchema = Yup.object().shape({
         .defined(),
 });
 
-const Login = ({ setFormType }: any) => {
+const Login = ({ setFormType, setFormState }: any) => {
     return (
         <div>
             <h2 className="text-2xl text-center font-bold text-orange-400">
@@ -27,8 +27,7 @@ const Login = ({ setFormType }: any) => {
                 }}
                 validationSchema={SignUpSchema}
                 onSubmit={(values) => {
-                    // same shape as initial values
-                    console.log(values);
+                    setFormState(values);
                 }}
             >
                 {({ errors, touched, dirty, isValid }) => (
