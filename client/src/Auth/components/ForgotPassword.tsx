@@ -7,7 +7,7 @@ const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string().trim().email("Invalid email").defined(),
 });
 
-const ForgotPassword = ({ setFormType }: any) => {
+const ForgotPassword = ({ setFormType, setFormState }: any) => {
     return (
         <div>
             <h2 className="text-2xl text-center font-bold text-orange-400">
@@ -19,8 +19,7 @@ const ForgotPassword = ({ setFormType }: any) => {
                 }}
                 validationSchema={ForgotPasswordSchema}
                 onSubmit={(values) => {
-                    // same shape as initial values
-                    console.log(values);
+                    setFormState(values);
                 }}
             >
                 {({ errors, touched, isValid, dirty }) => (
