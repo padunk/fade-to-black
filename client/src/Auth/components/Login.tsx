@@ -1,5 +1,5 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, FormikValues } from "formik";
 import * as Yup from "yup";
 import Button from "../../components/Button/Button";
 
@@ -12,7 +12,7 @@ const LoginSchema = Yup.object().shape({
         .defined(),
 });
 
-const Login = ({ setFormType }: any) => {
+const Login = ({ logIn, setFormType, loading }: any) => {
     return (
         <div>
             <h2 className="text-2xl text-center font-bold text-orange-400">
@@ -24,9 +24,9 @@ const Login = ({ setFormType }: any) => {
                     password: "",
                 }}
                 validationSchema={LoginSchema}
-                onSubmit={(values) => {
-                    // same shape as initial values
-                    console.log(values);
+                onSubmit={(values: FormikValues) => {
+                    console.log("values", values);
+                    logIn(values);
                 }}
             >
                 {({ errors, touched, isValid, dirty }) => (
@@ -63,7 +63,7 @@ const Login = ({ setFormType }: any) => {
                                 type="submit"
                                 title="Submit"
                                 looks="main"
-                                disabled={!(dirty && isValid)}
+                                disabled={!(dirty && isValid) || loading}
                             />
                         </div>
                         <div className="text-sm text-gray-500">
