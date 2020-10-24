@@ -1,3 +1,7 @@
+// Local Storage Key
+export const LOCAL_STORAGE_KEY = "Our_Stories_Token";
+
+// UI
 export const LOADING = "LOADING";
 
 // Auth
