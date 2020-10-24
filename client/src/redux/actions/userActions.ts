@@ -15,7 +15,11 @@ const getUserData = () => async (dispatch: Dispatch) => {
     }
 };
 
-export const logIn = (userData: any) => async (dispatch: Dispatch) => {
+export const logIn = (
+    userData: any,
+    history: History,
+    redirectPage: string
+) => async (dispatch: Dispatch) => {
     dispatch({
         type: type.LOADING,
     });
@@ -27,14 +31,29 @@ export const logIn = (userData: any) => async (dispatch: Dispatch) => {
                 type: type.LOGIN_SUCCESS,
             });
             const storiesToken = `Bearer ${token}`;
-            localStorage.setItem("storiesToken", storiesToken);
+            localStorage.setItem(type.LOCAL_STORAGE_KEY, storiesToken);
             axios.defaults.headers.common["Authorization"] = storiesToken;
             getUserData()(dispatch);
+            // @ts-ignore
+            history.push(redirectPage);
         }
     } catch (err) {
         dispatch({
             type: type.LOGIN_FAIL,
             payload: err.response.data.error,
         });
+    }
+};
+
+export const logOut = (history: any) => async (dispatch: Dispatch) => {
+    localStorage.removeItem(type.LOCAL_STORAGE_KEY);
+    try {
+        await axios.post("/logout");
+        dispatch({ type: type.LOGOUT_SUCCESS });
+    } catch (error) {
+        console.error(error);
+    } finally {
+        delete axios.defaults.headers.common;
+        history.push("/");
     }
 };
