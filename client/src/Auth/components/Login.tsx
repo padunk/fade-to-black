@@ -1,6 +1,7 @@
 import React from "react";
 import { Formik, Form, Field, FormikValues } from "formik";
 import * as Yup from "yup";
+import { useHistory } from "react-router-dom";
 import Button from "../../components/Button/Button";
 
 const LoginSchema = Yup.object().shape({
@@ -13,6 +14,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 const Login = ({ errorMessage, loading, logIn, setFormType }: any) => {
+    const history = useHistory();
     return (
         <div>
             <h2 className="text-2xl text-center font-bold text-orange-400">
@@ -25,8 +27,8 @@ const Login = ({ errorMessage, loading, logIn, setFormType }: any) => {
                 }}
                 validationSchema={LoginSchema}
                 onSubmit={(values: FormikValues) => {
-                    console.log("values", values);
-                    logIn(values);
+                    // console.log("values", values);
+                    logIn(values, history, "/feed");
                 }}
             >
                 {({ errors, touched, isValid, dirty }) => (
