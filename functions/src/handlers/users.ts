@@ -7,6 +7,7 @@ import * as fs from "fs";
 import { v4 as uuidV4 } from "uuid";
 import { admin, db } from "../util/admin";
 import { ImgProfile } from "../util/types";
+import { updateLoginTime } from "../util/helpers";
 
 // SIGN UP
 export const userSignUp = (req: Request, res: Response) => {
@@ -46,12 +47,15 @@ export const userSignUp = (req: Request, res: Response) => {
         })
         .then((token) => {
             userToken = token;
+            const time = new Date().getTime();
             return db.doc(`users/${newUser.userName}`).set({
                 userName: newUser.userName,
                 email: newUser.email,
-                createdAt: new Date().getTime(),
+                createdAt: time,
                 imageURL:
                     "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
+                lastLogin: time,
+                lastLogout: 0,
                 userId: userId,
             });
         })
@@ -80,11 +84,21 @@ export const userSignUp = (req: Request, res: Response) => {
 
 // LOGIN
 export const userLogIn = (req: Request, res: Response) => {
+    let id: string;
     firebase
         .auth()
         .signInWithEmailAndPassword(req.body.email, req.body.password)
-        .then((data) => data.user?.getIdToken())
-        .then((token) => res.json({ token }))
+        .then((data) => {
+            if (data.user?.uid) {
+                id = data.user?.uid;
+                // save login time
+                updateLoginTime(id);
+            }
+            return data.user?.getIdToken();
+        })
+        .then((token) => {
+            res.json({ token });
+        })
         .catch((err) => {
             console.log("err", err);
             switch (err.code) {
@@ -107,6 +121,26 @@ export const userLogIn = (req: Request, res: Response) => {
                     });
                     break;
             }
+        });
+};
+
+export const userLogOut = (req: any, res: Response) => {
+    firebase
+        .auth()
+        .signOut()
+        .then(() => {
+            db.doc(`users/${req.user.userName}`).update({
+                lastLogout: new Date().getTime(),
+            });
+            return res.json({
+                logout: "success",
+            });
+        })
+        .catch((error) => {
+            return res.json({
+                error: error.message,
+                code: error.code,
+            });
         });
 };
 

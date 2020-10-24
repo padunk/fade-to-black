@@ -20,6 +20,7 @@ import {
     markNotificationsRead,
     uploadImageProfile,
     userLogIn,
+    userLogOut,
     userSignUp,
 } from "./handlers/users";
 import {
@@ -66,6 +67,8 @@ app.post("/signup", userSignUp);
 
 // Login route
 app.post("/login", userLogIn);
+
+app.post("/logout", firebaseAuth, userLogOut);
 
 // Add user detail
 app.post("/user", firebaseAuth, addUserDetails);
