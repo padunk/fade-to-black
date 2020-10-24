@@ -19,15 +19,17 @@ export type Comment = {
 };
 
 export type UserCredentials = {
-    bio: string;
+    bio?: string;
     createdAt: number;
     email: string;
-    imageURL: string;
-    location: string;
+    imageURL?: string;
+    location?: string;
+    lastLogin: number;
+    lastLogout: number;
     updatedAt: number;
     userID: string;
-    userName: string;
-    website: string;
+    userName?: string;
+    website?: string;
 };
 
 export type Likes = {
