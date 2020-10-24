@@ -30,6 +30,11 @@ export const uiReducer = (state = uiInitialState, action: any) => {
                 errorMessage: "",
                 loading: false,
             };
+        case type.CLEAR_ERROR:
+            return {
+                ...state,
+                errorMessage: "",
+            };
         default:
             return state;
     }

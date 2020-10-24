@@ -4,24 +4,31 @@ import ForgotPassword from "./components/ForgotPassword";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
 import { logIn } from "../redux/actions/userActions";
+import { clearError } from "../redux/actions/uiActions";
 
-const Auth = ({ logIn, loading }: any) => {
-    const [formType, setFormType] = React.useState("login");
+const Auth = ({ clearError, errorMessage, logIn, loading }: any) => {
+    const [formType, setFormType] = React.useState<string>("login");
+
+    const updateForm = (form: string) => {
+        setFormType(form);
+        clearError();
+    };
 
     const renderForm = () => {
         switch (formType) {
             case "login":
                 return (
                     <Login
-                        setFormType={setFormType}
+                        setFormType={updateForm}
                         logIn={logIn}
                         loading={loading}
+                        errorMessage={errorMessage}
                     />
                 );
             case "signup":
-                return <SignUp setFormType={setFormType} />;
+                return <SignUp setFormType={updateForm} />;
             case "forgotPassword":
-                return <ForgotPassword setFormType={setFormType} />;
+                return <ForgotPassword setFormType={updateForm} />;
             default:
                 return <p>Unknown Type</p>;
         }
@@ -45,6 +52,7 @@ const mapStateToProps = (state: any) => {
 
 const mapDispatchToProps = {
     logIn,
+    clearError,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

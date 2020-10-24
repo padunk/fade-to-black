@@ -89,14 +89,20 @@ export const userLogIn = (req: Request, res: Response) => {
             console.log("err", err);
             switch (err.code) {
                 case "auth/wrong-password":
-                    res.status(400).json({ error: err.message });
+                    res.status(400).json({ error: "Wrong password." });
                     break;
                 case "auth/user-not-found":
-                    res.status(400).json({ error: err.message });
+                    res.status(400).json({ error: "User not found." });
+                    break;
+                case "auth/too-many-requests":
+                    res.status(400).json({
+                        error:
+                            "Too many failed login attempts. Try resetting your password or you can try again later.",
+                    });
                     break;
                 default:
                     res.status(500).json({
-                        message: err.message,
+                        error: err.message,
                         code: err.code,
                     });
                     break;

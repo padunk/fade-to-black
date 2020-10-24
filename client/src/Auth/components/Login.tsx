@@ -12,7 +12,7 @@ const LoginSchema = Yup.object().shape({
         .defined(),
 });
 
-const Login = ({ logIn, setFormType, loading }: any) => {
+const Login = ({ errorMessage, loading, logIn, setFormType }: any) => {
     return (
         <div>
             <h2 className="text-2xl text-center font-bold text-orange-400">
@@ -58,6 +58,11 @@ const Login = ({ logIn, setFormType, loading }: any) => {
                             type="password"
                             className="py-1 px-2 text-gray-800"
                         />
+                        {errorMessage !== "" && (
+                            <p className="text-sm text-red-500">
+                                {errorMessage}
+                            </p>
+                        )}
                         <div className="my-2">
                             <Button
                                 type="submit"

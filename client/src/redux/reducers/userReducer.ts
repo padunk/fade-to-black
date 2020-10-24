@@ -29,6 +29,11 @@ export const userReducer = (state = userInitialState, action: any) => {
                 likes: [],
                 notifications: [],
             };
+        case type.SET_USER:
+            return {
+                ...state,
+                ...action.payload,
+            };
         default:
             return state;
     }
