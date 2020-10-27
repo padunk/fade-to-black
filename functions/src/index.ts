@@ -19,6 +19,7 @@ import {
     getUserDetails,
     markNotificationsRead,
     uploadImageProfile,
+    userForgotPassword,
     userLogIn,
     userLogOut,
     userSignUp,
@@ -62,6 +63,9 @@ app.post("/whisper/:whisperID/unlike", firebaseAuth, unLikeWhisper);
 app.post("/whisper/:whisperID/comment", firebaseAuth, postComment);
 
 // USER
+// Forgot password route
+app.post("/forgot-password", userForgotPassword);
+
 // SignUp route
 app.post("/signup", userSignUp);
 

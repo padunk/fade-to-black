@@ -140,7 +140,7 @@ export const userLogOut = (req: any, res: Response) => {
             db.doc(`users/${req.user.userName}`).update({
                 lastLogout: new Date().getTime(),
             });
-            return res.json({
+            return res.status(204).json({
                 logout: "success",
             });
         })
@@ -149,6 +149,34 @@ export const userLogOut = (req: any, res: Response) => {
                 error: error.message,
                 code: error.code,
             });
+        });
+};
+
+export const userForgotPassword = (req: Request, res: Response) => {
+    firebase
+        .auth()
+        .sendPasswordResetEmail(req.body.email, {
+            url: `http://localhost:3000/`,
+            handleCodeInApp: true,
+        })
+        .then(() => res.status(204).json({ resetPassword: "success" }))
+        .catch((error) => {
+            switch (error.code) {
+                case "auth/invalid-email":
+                    res.status(400).json({
+                        error: "Invalid email.",
+                    });
+                    break;
+                case "auth/user-not-found":
+                    res.status(400).json({ error: "User not found." });
+                    break;
+                default:
+                    res.status(500).json({
+                        error: error.message,
+                        code: error.code,
+                    });
+                    break;
+            }
         });
 };
 
