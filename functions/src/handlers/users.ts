@@ -6,7 +6,7 @@ import * as os from "os";
 import * as fs from "fs";
 import { v4 as uuidV4 } from "uuid";
 import { admin, db } from "../util/admin";
-import { ImgProfile } from "../util/types";
+import { ImgProfile, UserCredentials } from "../util/types";
 import { updateLoginTime } from "../util/helpers";
 
 // SIGN UP
@@ -14,7 +14,6 @@ export const userSignUp = (req: Request, res: Response) => {
     const newUser = {
         email: req.body.email,
         password: req.body.password,
-        confirmPassword: req.body.confirmPassword,
         userName: req.body.userName,
     };
 
@@ -25,10 +24,7 @@ export const userSignUp = (req: Request, res: Response) => {
         .get()
         .then((doc) => {
             if (doc.exists) {
-                res.status(400).json({
-                    userName: "this userName is already taken",
-                });
-                return;
+                throw new Error("auth/username-already-in-use");
             } else {
                 return firebase
                     .auth()
@@ -36,44 +32,56 @@ export const userSignUp = (req: Request, res: Response) => {
                         newUser.email,
                         newUser.password
                     )
-                    .catch((err) => {
-                        throw new Error(err);
+                    .catch((err: Error) => {
+                        console.log("err1 >>", err);
+                        throw new Error(err.message);
                     });
             }
         })
         .then((data) => {
-            userId = data?.user?.uid;
-            return data?.user?.getIdToken();
+            if (data) {
+                userId = data?.user?.uid;
+                return data?.user?.getIdToken();
+            }
+            return;
         })
         .then((token) => {
+            if (!token) return;
             userToken = token;
             const time = new Date().getTime();
-            return db.doc(`users/${newUser.userName}`).set({
-                userName: newUser.userName,
-                email: newUser.email,
+            const newUserData: UserCredentials = {
+                bio: "",
                 createdAt: time,
+                email: newUser.email,
                 imageURL:
                     "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
-                lastLogin: time,
+                lastLogin: 0,
                 lastLogout: 0,
-                userId: userId,
-            });
+                userId: userId!,
+                userName: newUser.userName,
+                website: "",
+            };
+
+            return db.doc(`users/${newUser.userName}`).set(newUserData);
         })
         .then(() => {
             return res.status(201).json({ userToken });
         })
         .catch((err) => {
-            console.log("err", err);
-            switch (err.code) {
+            console.log("err2 >>", err);
+            switch (err.code || err.message) {
                 case "auth/email-already-in-use":
                     res.status(400).json({ error: err.message });
+                    break;
+                case "auth/username-already-in-use":
+                    res.status(400).json({ error: "Username already taken." });
                     break;
                 case "auth/weak-password":
                     res.status(400).json({ error: err.message });
                     break;
                 default:
                     res.status(500).json({
-                        message: err.message,
+                        error: err.message,
                         code: err.code,
                         general: "Something went wrong, please try again",
                     });
