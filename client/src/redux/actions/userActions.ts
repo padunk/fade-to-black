@@ -1,6 +1,7 @@
 import { Dispatch } from "redux";
 import { axios } from "../../Axios";
 import * as type from "./constants";
+import { Login, SignUp } from "types";
 
 const getUserData = () => async (dispatch: Dispatch) => {
     try {
@@ -16,7 +17,7 @@ const getUserData = () => async (dispatch: Dispatch) => {
 };
 
 export const logIn = (
-    userData: any,
+    userData: Login,
     history: History,
     redirectPage: string
 ) => async (dispatch: Dispatch) => {
@@ -58,9 +59,10 @@ export const logOut = (history: any) => async (dispatch: Dispatch) => {
     }
 };
 
-export const signUp = (userData: any, setFormType: any) => async (
-    dispatch: Dispatch
-) => {
+export const signUp = (
+    userData: SignUp,
+    setFormType: React.Dispatch<React.SetStateAction<string>>
+) => async (dispatch: Dispatch) => {
     dispatch({
         type: type.LOADING,
     });
@@ -80,4 +82,29 @@ export const signUp = (userData: any, setFormType: any) => async (
             payload: err.response.data.error,
         });
     }
+};
+
+export const forgotPassword = (
+    userEmail: string,
+    setFormType: React.Dispatch<React.SetStateAction<string>>
+) => async (dispatch: Dispatch) => {
+    dispatch({
+        type: type.LOADING,
+    });
+
+    axios
+        .post("/forgot-password", userEmail)
+        .then(() => {
+            dispatch({
+                type: type.SENT_RESET_PASSWORD,
+            });
+            setFormType("login");
+        })
+        .catch((error) => {
+            console.log("error", error);
+            dispatch({
+                type: type.AUTH_ERROR,
+                payload: error.response.data.error,
+            });
+        });
 };

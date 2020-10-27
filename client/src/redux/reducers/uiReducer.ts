@@ -16,6 +16,8 @@ export const uiReducer = (state = uiInitialState, action: any) => {
                 loading: false,
             };
         case type.LOGIN_SUCCESS:
+        case type.SIGNUP_SUCCESS:
+        case type.SENT_RESET_PASSWORD:
             return {
                 ...state,
                 loading: false,
