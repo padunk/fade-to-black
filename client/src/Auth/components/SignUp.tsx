@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import Button from "../../components/Button/Button";
 
 const SignUpSchema = Yup.object().shape({
-    email: Yup.string().email("Invalid email").defined(),
+    email: Yup.string().trim().email("Invalid email").defined(),
     password: Yup.string().min(8, "Too short").max(16, "Too long").defined(),
     userName: Yup.string()
         .trim()
@@ -13,7 +13,7 @@ const SignUpSchema = Yup.object().shape({
         .defined(),
 });
 
-const Login = ({ setFormType, setFormState }: any) => {
+const SignUp = ({ errorMessage, loading, signUp, setFormType }: any) => {
     return (
         <div>
             <h2 className="text-2xl text-center font-bold text-orange-400">
@@ -27,7 +27,8 @@ const Login = ({ setFormType, setFormState }: any) => {
                 }}
                 validationSchema={SignUpSchema}
                 onSubmit={(values) => {
-                    setFormState(values);
+                    console.log("values :>> ", values);
+                    signUp(values, setFormType);
                 }}
             >
                 {({ errors, touched, dirty, isValid }) => (
@@ -73,12 +74,17 @@ const Login = ({ setFormType, setFormState }: any) => {
                             type="password"
                             className="py-1 px-2 text-gray-800"
                         />
+                        {errorMessage !== "" && (
+                            <p className="text-sm text-red-500">
+                                {errorMessage}
+                            </p>
+                        )}
                         <div className="my-2">
                             <Button
                                 type="submit"
                                 title="Submit"
                                 looks="main"
-                                disabled={!(dirty && isValid)}
+                                disabled={!(dirty && isValid) || loading}
                             />
                         </div>
                         <div className="text-sm text-gray-500">
@@ -99,4 +105,4 @@ const Login = ({ setFormType, setFormState }: any) => {
     );
 };
 
-export default Login;
+export default SignUp;

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import ForgotPassword from "./components/ForgotPassword";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
-import { logIn } from "../redux/actions/userActions";
+import { logIn, signUp } from "../redux/actions/userActions";
 import { clearError } from "../redux/actions/uiActions";
 import Welcome from "./components/Welcome";
 
@@ -14,6 +14,7 @@ const Auth = ({
     errorMessage,
     logIn,
     loading,
+    signUp,
 }: any) => {
     const [formType, setFormType] = React.useState<string>("login");
 
@@ -37,7 +38,14 @@ const Auth = ({
                         />
                     );
                 case "signup":
-                    return <SignUp setFormType={updateForm} />;
+                    return (
+                        <SignUp
+                            errorMessage={errorMessage}
+                            loading={loading}
+                            setFormType={updateForm}
+                            signUp={signUp}
+                        />
+                    );
                 case "forgotPassword":
                     return <ForgotPassword setFormType={updateForm} />;
                 default:
@@ -54,7 +62,6 @@ const Auth = ({
 };
 
 const mapStateToProps = (state: any) => {
-    console.log("mstp at Auth >>", state);
     const { errorMessage, loading } = state.ui;
     const { authenticated, credentials } = state.user;
     return {
@@ -66,8 +73,9 @@ const mapStateToProps = (state: any) => {
 };
 
 const mapDispatchToProps = {
-    logIn,
     clearError,
+    logIn,
+    signUp,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Auth);

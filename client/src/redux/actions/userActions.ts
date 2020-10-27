@@ -57,3 +57,27 @@ export const logOut = (history: any) => async (dispatch: Dispatch) => {
         history.push("/");
     }
 };
+
+export const signUp = (userData: any, setFormType: any) => async (
+    dispatch: Dispatch
+) => {
+    dispatch({
+        type: type.LOADING,
+    });
+
+    try {
+        const response = await axios.post("/signup", userData);
+        const token = await response.data.userToken;
+        if (token !== "") {
+            dispatch({
+                type: type.SIGNUP_SUCCESS,
+            });
+            setFormType("login");
+        }
+    } catch (err) {
+        dispatch({
+            type: type.SIGNUP_FAIL,
+            payload: err.response.data.error,
+        });
+    }
+};
