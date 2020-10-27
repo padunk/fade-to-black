@@ -26,8 +26,8 @@ export type UserCredentials = {
     location?: string;
     lastLogin: number;
     lastLogout: number;
-    updatedAt: number;
-    userID: string;
+    updatedAt?: number;
+    userId: string;
     userName?: string;
     website?: string;
 };
