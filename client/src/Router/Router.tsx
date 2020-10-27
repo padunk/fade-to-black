@@ -6,6 +6,7 @@ import NotFound from "../Pages/404";
 import About from "../Pages/About";
 import Feed from "../Pages/Feed";
 import Home from "../Pages/Home";
+import { RootState } from "types";
 
 function PrivateRoute({ children, ...rest }: any) {
     return (
@@ -27,7 +28,7 @@ function PrivateRoute({ children, ...rest }: any) {
     );
 }
 
-const Router = ({ authenticated }: any) => {
+const Router: React.FC<{ authenticated: boolean }> = ({ authenticated }) => {
     return (
         <BrowserRouter>
             <Layout>
@@ -44,7 +45,7 @@ const Router = ({ authenticated }: any) => {
     );
 };
 
-const mapStateToProps = ({ user }: any) => {
+const mapStateToProps = ({ user }: RootState) => {
     return {
         authenticated: user.authenticated,
     };

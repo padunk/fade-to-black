@@ -2,17 +2,25 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Button from "../../components/Button/Button";
+import { forgotPassword } from "../../redux/actions/userActions";
 
 const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string().trim().email("Invalid email").defined(),
 });
 
-const ForgotPassword = ({
+type IForgotPasswordProps = {
+    errorMessage: string;
+    forgotPassword: typeof forgotPassword;
+    loading: boolean;
+    updateForm: (form: string) => void;
+};
+
+const ForgotPassword: React.FC<IForgotPasswordProps> = ({
     errorMessage,
     forgotPassword,
     loading,
-    setFormType,
-}: any) => {
+    updateForm,
+}) => {
     return (
         <div>
             <h2 className="text-2xl text-center font-bold text-orange-400">
@@ -23,8 +31,8 @@ const ForgotPassword = ({
                     email: "",
                 }}
                 validationSchema={ForgotPasswordSchema}
-                onSubmit={(values) => {
-                    forgotPassword(values, setFormType);
+                onSubmit={({ email }): void => {
+                    forgotPassword(email, updateForm);
                 }}
             >
                 {({ errors, touched, isValid, dirty }) => (
@@ -60,7 +68,7 @@ const ForgotPassword = ({
                                 Already have an Account?{" "}
                                 <span
                                     className="cursor-pointer text-orange-300 underline"
-                                    onClick={() => setFormType("login")}
+                                    onClick={() => updateForm("login")}
                                 >
                                     Log In
                                 </span>

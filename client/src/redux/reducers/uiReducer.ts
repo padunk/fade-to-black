@@ -1,11 +1,32 @@
 import * as type from "../actions/constants";
+import { AuthError } from "types";
 
-const uiInitialState = {
+interface FailAction {
+    type:
+        | typeof type.AUTH_ERROR
+        | typeof type.LOGIN_FAIL
+        | typeof type.SIGNUP_FAIL;
+    payload: AuthError;
+}
+
+interface OtherAction {
+    type:
+        | typeof type.LOGIN_SUCCESS
+        | typeof type.SIGNUP_SUCCESS
+        | typeof type.SENT_RESET_PASSWORD
+        | typeof type.LOADING
+        | typeof type.LOGOUT_SUCCESS
+        | typeof type.CLEAR_ERROR;
+}
+
+type Actions = FailAction | OtherAction;
+
+const uiInitialState: AuthError = {
     errorMessage: "",
     loading: false,
 };
 
-export const uiReducer = (state = uiInitialState, action: any) => {
+export const uiReducer = (state = uiInitialState, action: Actions) => {
     switch (action.type) {
         case type.AUTH_ERROR:
         case type.LOGIN_FAIL:

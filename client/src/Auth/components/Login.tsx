@@ -1,8 +1,9 @@
 import React from "react";
-import { Formik, Form, Field, FormikValues } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useHistory } from "react-router-dom";
 import Button from "../../components/Button/Button";
+import { logIn } from "../../redux/actions/userActions";
 
 const LoginSchema = Yup.object().shape({
     email: Yup.string().trim().email("Invalid email").defined(),
@@ -13,7 +14,19 @@ const LoginSchema = Yup.object().shape({
         .defined(),
 });
 
-const Login = ({ errorMessage, loading, logIn, setFormType }: any) => {
+type ILoginProps = {
+    errorMessage: string;
+    loading: boolean;
+    logIn: typeof logIn;
+    updateForm: (s: string) => void;
+};
+
+const Login: React.FC<ILoginProps> = ({
+    errorMessage,
+    loading,
+    logIn,
+    updateForm,
+}) => {
     const history = useHistory();
     return (
         <div>
@@ -26,8 +39,7 @@ const Login = ({ errorMessage, loading, logIn, setFormType }: any) => {
                     password: "",
                 }}
                 validationSchema={LoginSchema}
-                onSubmit={(values: FormikValues) => {
-                    // console.log("values", values);
+                onSubmit={(values) => {
                     logIn(values, history, "/feed");
                 }}
             >
@@ -78,7 +90,7 @@ const Login = ({ errorMessage, loading, logIn, setFormType }: any) => {
                                 Don't have an Account?{" "}
                                 <span
                                     className="cursor-pointer text-orange-300 underline"
-                                    onClick={() => setFormType("signup")}
+                                    onClick={() => updateForm("signup")}
                                 >
                                     Sign Up
                                 </span>
@@ -86,9 +98,7 @@ const Login = ({ errorMessage, loading, logIn, setFormType }: any) => {
                             <p>
                                 <span
                                     className="cursor-pointer text-orange-300 underline"
-                                    onClick={() =>
-                                        setFormType("forgotPassword")
-                                    }
+                                    onClick={() => updateForm("forgotPassword")}
                                 >
                                     Forgot Password?
                                 </span>

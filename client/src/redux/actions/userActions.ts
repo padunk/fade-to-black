@@ -3,7 +3,7 @@ import { axios } from "../../Axios";
 import * as type from "./constants";
 import { Login, SignUp } from "types";
 
-const getUserData = () => async (dispatch: Dispatch) => {
+const getUserData = () => async (dispatch: Dispatch): Promise<void> => {
     try {
         const response = await axios.get("/user");
 
@@ -18,9 +18,9 @@ const getUserData = () => async (dispatch: Dispatch) => {
 
 export const logIn = (
     userData: Login,
-    history: History,
+    history: any,
     redirectPage: string
-) => async (dispatch: Dispatch) => {
+) => async (dispatch: Dispatch): Promise<void> => {
     dispatch({
         type: type.LOADING,
     });
@@ -35,7 +35,6 @@ export const logIn = (
             localStorage.setItem(type.LOCAL_STORAGE_KEY, storiesToken);
             axios.defaults.headers.common["Authorization"] = storiesToken;
             getUserData()(dispatch);
-            // @ts-ignore
             history.push(redirectPage);
         }
     } catch (err) {
@@ -46,7 +45,9 @@ export const logIn = (
     }
 };
 
-export const logOut = (history: any) => async (dispatch: Dispatch) => {
+export const logOut = (history: any) => async (
+    dispatch: Dispatch
+): Promise<void> => {
     localStorage.removeItem(type.LOCAL_STORAGE_KEY);
     try {
         await axios.post("/logout");
@@ -61,8 +62,8 @@ export const logOut = (history: any) => async (dispatch: Dispatch) => {
 
 export const signUp = (
     userData: SignUp,
-    setFormType: React.Dispatch<React.SetStateAction<string>>
-) => async (dispatch: Dispatch) => {
+    updateForm: (s: string) => void
+) => async (dispatch: Dispatch): Promise<void> => {
     dispatch({
         type: type.LOADING,
     });
@@ -74,7 +75,7 @@ export const signUp = (
             dispatch({
                 type: type.SIGNUP_SUCCESS,
             });
-            setFormType("login");
+            updateForm("login");
         }
     } catch (err) {
         dispatch({
@@ -86,19 +87,19 @@ export const signUp = (
 
 export const forgotPassword = (
     userEmail: string,
-    setFormType: React.Dispatch<React.SetStateAction<string>>
-) => async (dispatch: Dispatch) => {
+    updateForm: (s: string) => void
+) => async (dispatch: Dispatch): Promise<void> => {
     dispatch({
         type: type.LOADING,
     });
 
     axios
-        .post("/forgot-password", userEmail)
+        .post("/forgot-password", { email: userEmail })
         .then(() => {
             dispatch({
                 type: type.SENT_RESET_PASSWORD,
             });
-            setFormType("login");
+            updateForm("login");
         })
         .catch((error) => {
             console.log("error", error);

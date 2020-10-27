@@ -2,6 +2,7 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Button from "../../components/Button/Button";
+import { signUp } from "../../redux/actions/userActions";
 
 const SignUpSchema = Yup.object().shape({
     email: Yup.string().trim().email("Invalid email").defined(),
@@ -13,7 +14,19 @@ const SignUpSchema = Yup.object().shape({
         .defined(),
 });
 
-const SignUp = ({ errorMessage, loading, signUp, setFormType }: any) => {
+type ISignUpProps = {
+    errorMessage: string;
+    loading: boolean;
+    signUp: typeof signUp;
+    updateForm: (s: string) => void;
+};
+
+const SignUp: React.FC<ISignUpProps> = ({
+    errorMessage,
+    loading,
+    signUp,
+    updateForm,
+}) => {
     return (
         <div>
             <h2 className="text-2xl text-center font-bold text-orange-400">
@@ -27,8 +40,7 @@ const SignUp = ({ errorMessage, loading, signUp, setFormType }: any) => {
                 }}
                 validationSchema={SignUpSchema}
                 onSubmit={(values) => {
-                    console.log("values :>> ", values);
-                    signUp(values, setFormType);
+                    signUp(values, updateForm);
                 }}
             >
                 {({ errors, touched, dirty, isValid }) => (
@@ -92,7 +104,7 @@ const SignUp = ({ errorMessage, loading, signUp, setFormType }: any) => {
                                 Already have an Account?{" "}
                                 <span
                                     className="cursor-pointer text-orange-300 underline"
-                                    onClick={() => setFormType("login")}
+                                    onClick={() => updateForm("login")}
                                 >
                                     Log In
                                 </span>

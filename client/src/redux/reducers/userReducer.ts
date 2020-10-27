@@ -1,5 +1,21 @@
-import { User } from "types";
+import { User, UserCredentials } from "types";
 import * as type from "../actions/constants";
+
+interface SetUserAction {
+    type: typeof type.SET_USER;
+    payload: UserCredentials;
+}
+
+interface OtherAction {
+    type:
+        | typeof type.AUTH_ERROR
+        | typeof type.LOGIN_FAIL
+        | typeof type.SIGNUP_FAIL
+        | typeof type.LOGOUT_SUCCESS
+        | typeof type.LOGIN_SUCCESS;
+}
+
+type Actions = SetUserAction | OtherAction;
 
 const userInitialState: User = {
     authenticated: false,
@@ -8,7 +24,10 @@ const userInitialState: User = {
     notifications: [],
 };
 
-export const userReducer = (state = userInitialState, action: any) => {
+export const userReducer = (
+    state = userInitialState,
+    action: Actions
+): User => {
     switch (action.type) {
         case type.LOGIN_SUCCESS:
             return {
