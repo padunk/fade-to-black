@@ -1,6 +1,19 @@
 import React from "react";
 
-const Button = ({ looks, title, disabled, ...rest }: any) => {
+interface IButtonProps {
+    looks: "main" | "ghost" | "danger";
+    title: string;
+    disabled?: boolean;
+    onClick?: any;
+    type?: "button" | "reset" | "submit" | undefined;
+}
+
+const Button: React.VFC<IButtonProps> = ({
+    looks,
+    title,
+    disabled,
+    ...rest
+}) => {
     let twStyle: string;
     const basic = "px-2 py-1 rounded-md border-2 font-bold ";
 
