@@ -39,10 +39,17 @@ export const logIn = (
             history.push(redirectPage);
         }
     } catch (err) {
-        dispatch({
-            type: type.LOGIN_FAIL,
-            payload: err.response.data.error,
-        });
+        if (err.response.hasOwnProperty("data")) {
+            dispatch({
+                type: type.LOGIN_FAIL,
+                payload: err.response.data.error,
+            });
+        } else {
+            dispatch({
+                type: type.LOGIN_FAIL,
+                payload: "Something went wrong, please try again later.",
+            });
+        }
     }
 };
 
@@ -79,10 +86,17 @@ export const signUp = (
             updateForm("login");
         }
     } catch (err) {
-        dispatch({
-            type: type.SIGNUP_FAIL,
-            payload: err.response.data.error,
-        });
+        if (err.response.hasOwnProperty("data")) {
+            dispatch({
+                type: type.SIGNUP_FAIL,
+                payload: err.response.data.error,
+            });
+        } else {
+            dispatch({
+                type: type.SIGNUP_FAIL,
+                payload: "Something went wrong, please try again later.",
+            });
+        }
     }
 };
 
@@ -102,11 +116,17 @@ export const forgotPassword = (
             });
             updateForm("login");
         })
-        .catch((error) => {
-            console.log("error", error);
-            dispatch({
-                type: type.AUTH_ERROR,
-                payload: error.response.data.error,
-            });
+        .catch((err) => {
+            if (err.response.hasOwnProperty("data")) {
+                dispatch({
+                    type: type.AUTH_ERROR,
+                    payload: err.response.data.error,
+                });
+            } else {
+                dispatch({
+                    type: type.AUTH_ERROR,
+                    payload: "Something went wrong, please try again later.",
+                });
+            }
         });
 };
