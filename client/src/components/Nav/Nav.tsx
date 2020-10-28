@@ -1,8 +1,14 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import logo from "../../logo.svg";
+import { RootState } from "types";
 
-const Navbar = () => {
+type INavbarProps = {
+    authenticated: boolean;
+};
+
+const Navbar: React.FC<INavbarProps> = ({ authenticated }) => {
     return (
         <div className="bg-orange-600 p-2 pl-4 pr-4 flex flex-row justify-between items-center shadow-md">
             <div>
@@ -12,6 +18,11 @@ const Navbar = () => {
                 <li>
                     <Link to="/">HOME</Link>{" "}
                 </li>
+                {authenticated && (
+                    <li className="italic">
+                        <Link to="/feed">Stories</Link>{" "}
+                    </li>
+                )}
                 <li>
                     <Link to="/About">ABOUT</Link>{" "}
                 </li>
@@ -20,4 +31,11 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+const mapStateToProps = (state: RootState) => {
+    const { authenticated } = state.user;
+    return {
+        authenticated,
+    };
+};
+
+export default connect(mapStateToProps)(Navbar);
