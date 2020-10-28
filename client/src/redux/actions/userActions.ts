@@ -2,6 +2,7 @@ import { Dispatch } from "redux";
 import { axios } from "../../Axios";
 import * as type from "./constants";
 import { Login, SignUp } from "types";
+import * as H from "history";
 
 const getUserData = () => async (dispatch: Dispatch): Promise<void> => {
     try {
@@ -18,7 +19,7 @@ const getUserData = () => async (dispatch: Dispatch): Promise<void> => {
 
 export const logIn = (
     userData: Login,
-    history: any,
+    history: H.History,
     redirectPage: string
 ) => async (dispatch: Dispatch): Promise<void> => {
     dispatch({
@@ -45,7 +46,7 @@ export const logIn = (
     }
 };
 
-export const logOut = (history: any) => async (
+export const logOut = (history: H.History) => async (
     dispatch: Dispatch
 ): Promise<void> => {
     localStorage.removeItem(type.LOCAL_STORAGE_KEY);
