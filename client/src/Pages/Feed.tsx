@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { axios } from "../Axios";
 import { logOut } from "../redux/actions/userActions";
 import { RootState, Whisper } from "types";
@@ -47,7 +47,7 @@ const fakeData = [
 const Feed = ({ imageURL, logOut, userName }: any) => {
     const history = useHistory();
     const [whispers, setWhispers] = React.useState<Whisper[]>(fakeData);
-    const [fetchStatus, updateFetchStatus] = React.useState<string>("loading");
+    const [fetchStatus, updateFetchStatus] = React.useState<string>("success");
     const [error, updateError] = React.useState<string>("");
 
     React.useEffect(() => {
@@ -58,7 +58,6 @@ const Feed = ({ imageURL, logOut, userName }: any) => {
                 const response = await axios.get(url);
                 const data = await response.data;
                 updateFetchStatus("success");
-                console.log("data :>> ", data);
                 setWhispers(data);
             } catch (err) {
                 console.log("error :>> ", err);
@@ -70,16 +69,23 @@ const Feed = ({ imageURL, logOut, userName }: any) => {
         // getAllWhispers("/whispers");
     }, []);
 
+    const showUserDetail = () => {
+        console.log("userdetail");
+    };
+
     return (
         <div>
-            <header className="flex justify-between items-center bg-orange-400 shadow-sm py-2 px-4">
-                <img
-                    src={require("../assets/images/user1.jpg")}
-                    alt={`${userName} avatar`}
-                    className="w-10 h-10 rounded-full border-2 border-purple-600"
-                />
+            <header className="flex justify-between items-center border-b-2 border-gray-800 py-2 px-4">
+                <div className="w-12 h-12 rounded-full border-2 border-purple-600 cursor-pointer overflow-hidden">
+                    <img
+                        src={require("../assets/images/user1.jpg")}
+                        alt={`${userName} avatar`}
+                        onClick={showUserDetail}
+                        className="rounded-full border border-transparent border-solid transform hover:scale-105 transition-transform duration-300"
+                    />
+                </div>
                 <span className="text-purple-100 italic text-2xl">
-                    OurStories
+                    Whispers
                 </span>
                 <Button
                     title="Log Out"
@@ -89,24 +95,40 @@ const Feed = ({ imageURL, logOut, userName }: any) => {
             </header>
             <section>
                 {fetchStatus === "loading" ? (
-                    <div>Loading</div>
-                ) : fetchStatus === "fail" && error ? (
-                    <div>
-                        <p> Error getting stories, please try again later.</p>
-                        <p>{error}</p>
+                    <div className="flex justify-center items-center min-w-full min-h-screen">
+                        <div className="text-center text-3xl p-2">Loading</div>
+                    </div>
+                ) : fetchStatus === "fail" && error !== "" ? (
+                    <div className="flex justify-center items-center min-w-full min-h-screen">
+                        <div className="text-center text-3xl p-2">
+                            <p>
+                                {" "}
+                                Error getting stories, please try again later.
+                            </p>
+                            <p>{error}</p>
+                        </div>
                     </div>
                 ) : whispers.length === 0 ? (
-                    <div>
-                        <p>No Stories found. </p>
-                        <p>
-                            Please check your internet connection or refresh
-                            your browser.
-                        </p>
+                    <div className="flex justify-center items-center min-w-full min-h-screen">
+                        <div className="text-center text-3xl p-2">
+                            <p>No Stories found. </p>
+                            <p>
+                                Please check your internet connection or refresh
+                                your browser.
+                            </p>
+                        </div>
                     </div>
                 ) : (
-                    <div>
+                    <div className="flex justify-center flex-col max-w-screen-md m-auto">
                         {whispers.map((whisper) => {
-                            return <Card whisper={whisper} key={whisper.id} />;
+                            return (
+                                <Link
+                                    key={whisper.id}
+                                    to={`/whisper/${whisper.id}`}
+                                >
+                                    <Card whisper={whisper} />
+                                </Link>
+                            );
                         })}
                     </div>
                 )}
