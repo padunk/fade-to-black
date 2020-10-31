@@ -22,3 +22,14 @@ export const SENT_RESET_PASSWORD = "SENT_RESET_PASSWORD";
 export const SET_USER = "SET_USER";
 export const USER_LOADED = "USER_LOADED";
 export const USER_LOADING = "USER_LOADING";
+
+// DATA
+export const FETCH_FAIL = "FETCH_FAIL";
+export const FETCH_START = "FETCH_START";
+export const FETCH_WHISPER = "FETCH_WHISPER";
+export const FETCH_WHISPERS = "FETCH_WHISPERS";
+export const ADD_WHISPER = "ADD_WHISPER";
+export const DELETE_WHISPER = "DELETE_WHISPER";
+export const LIKE_WHISPER = "LIKE_WHISPER";
+export const UNLIKE_WHISPER = "UNLIKE_WHISPER";
+export const POST_NOTIF = "POST_NOTIF";
