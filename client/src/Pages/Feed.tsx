@@ -3,13 +3,17 @@ import { connect } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { axios } from "../Axios";
 import { logOut } from "../redux/actions/userActions";
+import { addWhisper, getAllWhispers } from "../redux/actions/dataActions";
 import { RootState, Whisper } from "types";
+import { GrAdd } from "react-icons/gr";
 
 import Button from "../components/Button/Button";
 import user1 from "../assets/images/user1.jpg";
 import user2 from "../assets/images/user2.jpg";
 import user3 from "../assets/images/user3.jpg";
 import Card from "../components/Card/Card";
+import AddWhisper from "../components/Modal/AddWhisper";
+import Container from "../Auth/components/Container/Container";
 
 const fakeData = [
     {
@@ -44,46 +48,41 @@ const fakeData = [
     },
 ];
 
-const Feed = ({ imageURL, logOut, userName }: any) => {
+type IFeedProps = ReturnType<typeof mapStateToProps> &
+    typeof mapDispatchToProps;
+
+const Feed: React.FC<IFeedProps> = ({
+    addWhisper,
+    dataError,
+    getAllWhispers,
+    imageURL,
+    loadingData,
+    logOut,
+    userName,
+    // whispers,
+}) => {
     const history = useHistory();
-    const [whispers, setWhispers] = React.useState<Whisper[]>(fakeData);
-    const [fetchStatus, updateFetchStatus] = React.useState<string>("success");
-    const [error, updateError] = React.useState<string>("");
+    const [addWhisperModalOpen, setAddWhisperModalOpen] = React.useState<
+        boolean
+    >(false);
+    const whispers = fakeData;
 
     React.useEffect(() => {
-        const getAllWhispers = async (url: string) => {
-            updateFetchStatus("loading");
-            updateError("");
-            try {
-                const response = await axios.get(url);
-                const data = await response.data;
-                updateFetchStatus("success");
-                setWhispers(data);
-            } catch (err) {
-                console.log("error :>> ", err);
-                updateFetchStatus("fail");
-                updateError(err);
-            }
-        };
-
         // getAllWhispers("/whispers");
     }, []);
 
-    const showUserDetail = () => {
-        console.log("userdetail");
-    };
-
     return (
-        <div>
+        <div className="relative">
             <header className="flex justify-between items-center border-b-2 border-gray-800 py-2 px-4">
-                <div className="w-12 h-12 rounded-full border-2 border-purple-600 cursor-pointer overflow-hidden">
-                    <img
-                        src={require("../assets/images/user1.jpg")}
-                        alt={`${userName} avatar`}
-                        onClick={showUserDetail}
-                        className="rounded-full border border-transparent border-solid transform hover:scale-105 transition-transform duration-300"
-                    />
-                </div>
+                <Link to={`/user/${userName}`}>
+                    <div className="w-12 h-12 rounded-full border-2 border-purple-600 cursor-pointer overflow-hidden">
+                        <img
+                            src={require("../assets/images/user1.jpg")}
+                            alt={`${userName} avatar`}
+                            className="rounded-full border border-transparent border-solid transform hover:scale-105 transition-transform duration-300"
+                        />
+                    </div>
+                </Link>
                 <span className="text-purple-100 italic text-2xl">
                     Whispers
                 </span>
@@ -94,22 +93,22 @@ const Feed = ({ imageURL, logOut, userName }: any) => {
                 />
             </header>
             <section>
-                {fetchStatus === "loading" ? (
-                    <div className="flex justify-center items-center min-w-full min-h-screen">
+                {loadingData === "pending" ? (
+                    <Container className="min-w-full min-h-screen">
                         <div className="text-center text-3xl p-2">Loading</div>
-                    </div>
-                ) : fetchStatus === "fail" && error !== "" ? (
-                    <div className="flex justify-center items-center min-w-full min-h-screen">
+                    </Container>
+                ) : loadingData === "error" && dataError !== "" ? (
+                    <Container className="min-w-full min-h-screen">
                         <div className="text-center text-3xl p-2">
                             <p>
                                 {" "}
                                 Error getting stories, please try again later.
                             </p>
-                            <p>{error}</p>
+                            <p>{dataError}</p>
                         </div>
-                    </div>
+                    </Container>
                 ) : whispers.length === 0 ? (
-                    <div className="flex justify-center items-center min-w-full min-h-screen">
+                    <Container className="min-w-full min-h-screen">
                         <div className="text-center text-3xl p-2">
                             <p>No Stories found. </p>
                             <p>
@@ -117,22 +116,27 @@ const Feed = ({ imageURL, logOut, userName }: any) => {
                                 your browser.
                             </p>
                         </div>
-                    </div>
+                    </Container>
                 ) : (
-                    <div className="flex justify-center flex-col max-w-screen-md m-auto">
+                    <div className="flex justify-center flex-col max-w-screen-md m-auto divide-y divide-gray-800">
                         {whispers.map((whisper) => {
-                            return (
-                                <Link
-                                    key={whisper.id}
-                                    to={`/whisper/${whisper.id}`}
-                                >
-                                    <Card whisper={whisper} />
-                                </Link>
-                            );
+                            return <Card whisper={whisper} key={whisper.id} />;
                         })}
                     </div>
                 )}
             </section>
+            <div
+                className="absolute right-0 bottom-0 ml-4 mb-4 bg-orange-500 bg-opacity-75 rounded-full p-2 hover:bg-opacity-100 transition-opacity duration-300 cursor-pointer"
+                onClick={() => setAddWhisperModalOpen(!addWhisperModalOpen)}
+            >
+                <GrAdd />
+            </div>
+            {addWhisperModalOpen && (
+                <AddWhisper
+                    setModalStatus={setAddWhisperModalOpen}
+                    addWhisper={addWhisper}
+                />
+            )}
         </div>
     );
 };
@@ -140,15 +144,20 @@ const Feed = ({ imageURL, logOut, userName }: any) => {
 const mapStateToProps = (state: RootState) => {
     const imageURL = state.user.credentials?.imageURL;
     const userName = state.user.credentials?.userName;
+    const { data } = state;
 
     return {
+        ...data,
         imageURL,
         userName,
     };
 };
 
 const mapDispatchToProps = {
+    addWhisper,
     logOut,
+    getAllWhispers,
 };
 
+// @ts-ignore
 export default connect(mapStateToProps, mapDispatchToProps)(Feed);
