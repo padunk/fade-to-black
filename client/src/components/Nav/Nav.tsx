@@ -10,7 +10,7 @@ type INavbarProps = {
 
 const Navbar: React.FC<INavbarProps> = ({ authenticated }) => {
     return (
-        <div className="bg-orange-600 p-2 pl-4 pr-4 flex flex-row justify-between items-center shadow-md">
+        <div className="bg-orange-600 p-2 pl-4 pr-4 flex flex-row justify-between items-center py-2">
             <div>
                 <img src={logo} width={40} height={40} alt="logo" />
             </div>
@@ -20,7 +20,7 @@ const Navbar: React.FC<INavbarProps> = ({ authenticated }) => {
                 </li>
                 {authenticated && (
                     <li className="italic">
-                        <Link to="/feed">Stories</Link>{" "}
+                        <Link to="/feed">Whispers</Link>{" "}
                     </li>
                 )}
                 <li>
