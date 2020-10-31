@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { GrClose } from "react-icons/gr";
 import Button from "../Button/Button";
 
-const LoginSchema = Yup.object().shape({
+const AddCommentSchema = Yup.object().shape({
     body: Yup.string()
         .trim()
         .min(3, "Too short")
@@ -54,7 +54,7 @@ const AddComment: React.VFC<IAddCommentProps> = ({
                 initialValues={{
                     body: "",
                 }}
-                validationSchema={LoginSchema}
+                validationSchema={AddCommentSchema}
                 onSubmit={(values) => {
                     console.log("values", values);
                     setModalStatus(false);
