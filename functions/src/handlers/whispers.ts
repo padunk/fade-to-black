@@ -32,12 +32,11 @@ export const postWhisper = (req: any, res: Response) => {
     db.collection("whispers")
         .add(newWhisper)
         .then((doc) => {
-            const finalWhisper: Whisper = newWhisper;
-            finalWhisper.id = doc.id;
-            res.json(finalWhisper);
+            newWhisper.id = doc.id;
+            return res.json(newWhisper);
         })
         .catch((err) => {
-            res.status(500).json({ error: "something went wrong" });
+            res.status(500).json({ error: "Something went wrong." });
             console.log("err", err);
         });
 };
