@@ -8,6 +8,7 @@ import Feed from "../Pages/Feed";
 import Home from "../Pages/Home";
 import { RootState } from "types";
 import WhisperDetail from "../Pages/WhisperDetail";
+import UserProfile from "../Pages/UserProfile";
 
 function PrivateRoute({ children, ...rest }: any) {
     return (
@@ -36,13 +37,20 @@ const Router: React.FC<{ authenticated: boolean }> = ({ authenticated }) => {
                 <Switch>
                     <Route path="/" exact component={Home} />
                     <Route path="/about" exact component={About} />
-                    <Route
-                        path="/whisper/:whisperID"
-                        exact
-                        component={WhisperDetail}
-                    />
                     <PrivateRoute path="/feed" authenticated={authenticated}>
                         <Feed />
+                    </PrivateRoute>
+                    <PrivateRoute
+                        path="/whisper/:whisperID"
+                        authenticated={authenticated}
+                    >
+                        <WhisperDetail />
+                    </PrivateRoute>
+                    <PrivateRoute
+                        path="/user/:userName"
+                        authenticated={authenticated}
+                    >
+                        <UserProfile />
                     </PrivateRoute>
                     <Route path="*" component={NotFound} />
                 </Switch>
