@@ -6,12 +6,12 @@ type IContainerProps = {
 };
 
 const Container: React.VFC<IContainerProps> = (props) => {
-    let cln = `flex justify-center items-center `;
-    if (props.className) {
-        cln += props.className;
-    }
+    const defaultClassName = " flex justify-center items-center ";
     return (
-        <div className={cln} {...props}>
+        <div
+            {...props}
+            className={props.className && props.className + defaultClassName}
+        >
             {props.children}
         </div>
     );
