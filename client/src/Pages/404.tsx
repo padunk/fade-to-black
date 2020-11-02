@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Container from "../Auth/components/Container/Container";
+import Container from "../components/Container/Container";
 
 const NotFound = () => {
     return (

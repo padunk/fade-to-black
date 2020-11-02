@@ -8,7 +8,7 @@ import { Comments, Whisper } from "types";
 import Card from "../components/Card/Card";
 import AddComment from "../components/Modal/AddComment";
 import Button from "../components/Button/Button";
-import Container from "../Auth/components/Container/Container";
+import Container from "../components/Container/Container";
 
 type ParamsObject = {
     whisperID: string;
