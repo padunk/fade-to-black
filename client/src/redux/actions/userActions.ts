@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 import { axios } from "../../Axios";
 import * as type from "./constants";
-import { Login, SignUp } from "types";
+import { Login, SignUp, UpdateUserProfile } from "types";
 import * as H from "history";
 
 const getUserData = () => async (dispatch: Dispatch): Promise<void> => {
@@ -129,4 +129,29 @@ export const forgotPassword = (
                 });
             }
         });
+};
+
+export const editProfile = (data: UpdateUserProfile) => async (
+    dispatch: Dispatch
+): Promise<void> => {
+    dispatch({
+        type: type.LOADING,
+    });
+
+    try {
+        await axios.post("/user", data);
+        getUserData()(dispatch);
+    } catch (err) {
+        if (err.response.hasOwnProperty("data")) {
+            dispatch({
+                type: type.AUTH_ERROR,
+                payload: err.response.data.error,
+            });
+        } else {
+            dispatch({
+                type: type.AUTH_ERROR,
+                payload: "Something went wrong, please try again later.",
+            });
+        }
+    }
 };

@@ -5,24 +5,30 @@ import Button from "../Button/Button";
 import InputField from "../InputField/InputField";
 import { urlRegex } from "regex";
 import { connect } from "react-redux";
-import { RootState } from "types";
+import { RootState, UpdateUserProfile } from "types";
 import Close from "./components/Close";
 import ModalHeader from "./components/ModalHeader";
+import TextAreaField from "../InputField/TextAreaField";
+import { editProfile } from "../../redux/actions/userActions";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
 
 const EditProfileSchema = Yup.object().shape({
     bio: Yup.string().trim().min(3, "Too short").max(160, "Too long"),
     email: Yup.string().trim().email("Invalid email").defined(),
     location: Yup.string().trim().min(2, "Too short").max(30, "Too long"),
-    website: Yup.string().trim().matches(urlRegex, "Invalid URL address"),
+    protocol: Yup.string(),
+    website: Yup.string().trim().url().matches(urlRegex, "Invalid URL address"),
 });
 
-type IEditProfileProps = ReturnType<typeof mapStateToProps> & {
-    setEditProfileModal: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type IEditProfileProps = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> & {
+        setModalStatus: React.Dispatch<React.SetStateAction<boolean>>;
+    };
 
 const EditProfile: React.FC<IEditProfileProps> = ({
+    editProfile,
+    setModalStatus,
     user,
-    setEditProfileModal,
 }) => {
     return (
         <div
@@ -32,7 +38,7 @@ const EditProfile: React.FC<IEditProfileProps> = ({
                 height: "calc(100vh - 72px)",
             }}
         >
-            <Close openModal={setEditProfileModal} />
+            <Close openModal={setModalStatus} />
             <ModalHeader title={"Edit Profile"} />
             <Formik
                 initialValues={{
@@ -44,12 +50,20 @@ const EditProfile: React.FC<IEditProfileProps> = ({
                 }}
                 validationSchema={EditProfileSchema}
                 onSubmit={(values) => {
-                    console.log(values);
+                    const data: UpdateUserProfile = {
+                        bio: values.bio,
+                        email: values.email,
+                        location: values.location,
+                        website: values.protocol + values.website,
+                    };
+                    console.log(data);
+                    editProfile(data);
+                    setModalStatus(false);
                 }}
             >
                 {({ dirty, isValid }) => (
                     <Form className="px-4">
-                        <InputField label="Bio" name="bio" />
+                        <TextAreaField label="Bio" name="bio" />
                         <InputField label="Email" name="email" />
                         <InputField label="Location" name="location" />
                         <div className="flex">
@@ -81,4 +95,13 @@ const mapStateToProps = (state: RootState) => {
     };
 };
 
-export default connect(mapStateToProps)(EditProfile);
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+    return bindActionCreators(
+        {
+            editProfile,
+        },
+        dispatch
+    );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
