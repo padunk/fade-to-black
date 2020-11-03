@@ -1,7 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
-import { axios } from "../Axios";
 import { logOut } from "../redux/actions/userActions";
 import { addWhisper, getAllWhispers } from "../redux/actions/dataActions";
 import { RootState, Whisper } from "types";
@@ -13,7 +12,7 @@ import user2 from "../assets/images/user2.jpg";
 import user3 from "../assets/images/user3.jpg";
 import Card from "../components/Card/Card";
 import AddWhisper from "../components/Modal/AddWhisper";
-import Container from "../Auth/components/Container/Container";
+import Container from "../components/Container/Container";
 
 const fakeData = [
     {
@@ -118,7 +117,7 @@ const Feed: React.FC<IFeedProps> = ({
                         </div>
                     </Container>
                 ) : (
-                    <div className="flex justify-center flex-col max-w-screen-md m-auto divide-y divide-gray-800">
+                    <div className="flex justify-center items-center flex-col max-w-screen-md m-auto divide-y divide-gray-800">
                         {whispers.map((whisper) => {
                             return <Card whisper={whisper} key={whisper.id} />;
                         })}
