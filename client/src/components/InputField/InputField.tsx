@@ -26,6 +26,7 @@ const InputField: React.FC<IInputFieldProps> = ({ label, ...props }) => {
             />
             <span className="text-sm text-red-500 h-5">
                 {meta.touched && meta.error ? meta.error : ""}
+                &nbsp;
             </span>
         </div>
     );

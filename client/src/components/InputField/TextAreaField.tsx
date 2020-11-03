@@ -28,6 +28,7 @@ const TextAreaField: React.FC<ITextAreaFieldProps> = ({ label, ...props }) => {
             ></textarea>
             <span className="text-sm text-red-500 h-5">
                 {meta.touched && meta.error ? meta.error : ""}
+                &nbsp;
             </span>
         </>
     );
