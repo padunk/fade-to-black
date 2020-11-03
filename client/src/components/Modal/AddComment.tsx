@@ -1,7 +1,6 @@
 import React from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { GrClose } from "react-icons/gr";
 import Button from "../Button/Button";
 import TextAreaField from "../InputField/TextAreaField";
 import Container from "../Container/Container";
