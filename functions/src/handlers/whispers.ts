@@ -16,6 +16,25 @@ export const getAllWhispers = (_: any, res: Response) => {
         .catch((err) => console.log("err", err));
 };
 
+export const getWhispersByUser = (req: any, res: Response) => {
+    db.collection("whispers")
+        .where("userName", "==", req.params.userName)
+        .orderBy("createdAt", "desc")
+        .get()
+        .then((data) => {
+            const whispers: any = [];
+            data.forEach((doc) => {
+                whispers.push(Object.assign({}, doc.data(), { id: doc.id }));
+            });
+            return res.json(whispers);
+        })
+
+        .catch((err) => {
+            res.status(500).json({ error: "Something went wrong." });
+            console.log("err", err);
+        });
+};
+
 // POST
 // post one whisper
 export const postWhisper = (req: any, res: Response) => {

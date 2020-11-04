@@ -8,6 +8,7 @@ import {
     deleteWhisper,
     getAllWhispers,
     getWhisper,
+    getWhispersByUser,
     likeWhisper,
     postComment,
     postWhisper,
@@ -41,6 +42,9 @@ app.use(cors({ origin: true }));
 // WHISPER
 // Get all whisper
 app.get("/whispers", getAllWhispers);
+
+// Get all whispers by user
+app.get("/whispers/:userName", getWhispersByUser);
 
 // Post one whisper
 app.post("/whisper", firebaseAuth, postWhisper);
