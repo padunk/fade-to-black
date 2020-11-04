@@ -73,7 +73,7 @@ const Feed: React.FC<IFeedProps> = ({
     return (
         <div className="relative">
             <header className="flex justify-between items-center border-b-2 border-gray-800 py-2 px-4">
-                <Link to={`/user/${userName}`}>
+                <Link to={`/profile/${userName}`}>
                     <div className="w-12 h-12 rounded-full border-2 border-purple-600 cursor-pointer overflow-hidden">
                         <img
                             src={require("../assets/images/user1.jpg")}
