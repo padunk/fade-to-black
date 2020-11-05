@@ -7,13 +7,32 @@ import Button from "../components/Button/Button";
 import EditProfile from "../components/Modal/EditProfile";
 import ChangeImageProfile from "../components/Modal/ChangeImageProfile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
+import { axios } from "../Axios";
+import { Whisper } from "types";
+import WhispersList from "../components/WhispersList/WhispersList";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
+import { getAllWhispers } from "../redux/actions/dataActions";
 
-type IUserProfileProps = ReturnType<typeof mapStateToProps>;
+type IUserProfileProps = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps>;
 
-const UserProfile: React.FC<IUserProfileProps> = ({ user }) => {
+const UserProfile: React.FC<IUserProfileProps> = ({
+    error,
+    loading,
+    getAllWhispers,
+    user,
+    whispers,
+}) => {
     const history = useHistory();
     const [editModal, updateEditModal] = React.useState<boolean>(false);
     const [imageModal, updateImageModal] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        if (user?.userName) {
+            getAllWhispers(`/whispers/${user.userName}`);
+        }
+        getAllWhispers("/whispers/user");
+    }, []);
 
     return (
         <div className="relative">
@@ -44,14 +63,33 @@ const UserProfile: React.FC<IUserProfileProps> = ({ user }) => {
             {imageModal && (
                 <ChangeImageProfile setModalStatus={updateImageModal} />
             )}
+            {loading === "pending" ? (
+                <div>Loading</div>
+            ) : loading === "error" && error !== "" ? (
+                <div>{error}</div>
+            ) : (
+                <WhispersList whispers={whispers} excludeUser={true} />
+            )}
         </div>
     );
 };
 
 const mapStateToProps = (state: RootState) => {
     return {
+        error: state.data.dataError,
+        loading: state.data.loadingData,
         user: state.user.credentials,
+        whispers: state.data.whispers,
     };
 };
 
-export default connect(mapStateToProps)(UserProfile);
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+    return bindActionCreators(
+        {
+            getAllWhispers,
+        },
+        dispatch
+    );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile);

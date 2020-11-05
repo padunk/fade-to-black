@@ -14,6 +14,7 @@ import Card from "../components/Card/Card";
 import AddWhisper from "../components/Modal/AddWhisper";
 import Container from "../components/Container/Container";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
+import WhispersList from "../components/WhispersList/WhispersList";
 
 const fakeData = [
     {
@@ -118,11 +119,7 @@ const Feed: React.FC<IFeedProps> = ({
                         </div>
                     </Container>
                 ) : (
-                    <div className="flex justify-center items-center flex-col max-w-screen-md m-auto divide-y divide-gray-800">
-                        {whispers.map((whisper) => {
-                            return <Card whisper={whisper} key={whisper.id} />;
-                        })}
-                    </div>
+                    <WhispersList whispers={whispers} />
                 )}
             </section>
             <div
