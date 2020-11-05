@@ -13,6 +13,7 @@ import user3 from "../assets/images/user3.jpg";
 import Card from "../components/Card/Card";
 import AddWhisper from "../components/Modal/AddWhisper";
 import Container from "../components/Container/Container";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
 
 const fakeData = [
     {
@@ -48,7 +49,7 @@ const fakeData = [
 ];
 
 type IFeedProps = ReturnType<typeof mapStateToProps> &
-    typeof mapDispatchToProps;
+    ReturnType<typeof mapDispatchToProps>;
 
 const Feed: React.FC<IFeedProps> = ({
     addWhisper,
@@ -152,11 +153,15 @@ const mapStateToProps = (state: RootState) => {
     };
 };
 
-const mapDispatchToProps = {
-    addWhisper,
-    logOut,
-    getAllWhispers,
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+    return bindActionCreators(
+        {
+            addWhisper,
+            logOut,
+            getAllWhispers,
+        },
+        dispatch
+    );
 };
 
-// @ts-ignore
 export default connect(mapStateToProps, mapDispatchToProps)(Feed);
