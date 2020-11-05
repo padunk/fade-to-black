@@ -5,10 +5,13 @@ import { Link } from "react-router-dom";
 import { Whisper } from "types";
 import { AiTwotoneFire } from "react-icons/ai";
 import { MdModeComment } from "react-icons/md";
+import DeleteButton from "./DeleteButton";
+import { RootState } from "types";
+import { connect } from "react-redux";
 
 dayjs.extend(relativeTime);
 
-type ICardBodyProps = {
+type ICardBodyProps = ReturnType<typeof mapStateToProps> & {
     like: boolean;
     likeWhisper: (id: string) => Promise<void>;
     whisper: Whisper;
@@ -17,7 +20,10 @@ type ICardBodyProps = {
 const CardBody: React.FC<ICardBodyProps> = (props) => {
     const { like, likeWhisper, whisper } = props;
     return (
-        <div className="flex-auto p-2">
+        <div className="flex-auto p-2 relative">
+            {whisper.userName === props.userName && (
+                <DeleteButton id={whisper.id} />
+            )}
             <Link key={whisper.id} to={`/whisper/${whisper.id}`}>
                 <div>
                     <p className="text-black">{whisper.body}</p>
@@ -54,4 +60,10 @@ const CardBody: React.FC<ICardBodyProps> = (props) => {
     );
 };
 
-export default CardBody;
+const mapStateToProps = (state: RootState) => {
+    return {
+        userName: state.user.credentials?.userName,
+    };
+};
+
+export default connect(mapStateToProps)(CardBody);
