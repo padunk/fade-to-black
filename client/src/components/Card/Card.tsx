@@ -25,7 +25,7 @@ const Card: React.FC<ICardProps> = ({ excludeUser, whisper }) => {
     };
 
     return (
-        <div className="flex my-8 mx-4 rounded-lg bg-gray-500 max-w-sm w-64 mx-auto">
+        <div className="flex my-8 rounded-lg bg-gray-500 max-w-sm w-64 mx-auto">
             {excludeUser === undefined && <CardUser whisper={whisper} />}
             <CardBody like={like} likeWhisper={likeWhisper} whisper={whisper} />
         </div>
