@@ -9,6 +9,7 @@ import {
     getAllWhispers,
     getWhisper,
     getWhispersByUser,
+    isLike,
     likeWhisper,
     postComment,
     postWhisper,
@@ -57,6 +58,9 @@ app.delete("/whisper/:whisperID/delete", firebaseAuth, deleteWhisper);
 
 // like a whisper
 app.post("/whisper/:whisperID/like", firebaseAuth, likeWhisper);
+
+// is user already like a whisper?
+app.post("/whisper/is-like", isLike);
 
 // unlike a whisper
 app.post("/whisper/:whisperID/unlike", firebaseAuth, unLikeWhisper);
