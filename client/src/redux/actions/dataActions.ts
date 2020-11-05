@@ -2,6 +2,7 @@ import { Dispatch } from "redux";
 import { axios } from "../../Axios";
 import * as type from "./constants";
 import { Whisper } from "types";
+import * as H from "history";
 
 export const getAllWhispers = (url: string) => async (
     dispatch: Dispatch
@@ -44,6 +45,30 @@ export const addWhisper = (content: { body: string }) => async (
             type: type.ADD_WHISPER,
             payload: [data],
         });
+    } catch (err) {
+        if (err.response.hasOwnProperty("data")) {
+            dispatch({
+                type: type.FETCH_FAIL,
+                payload: err.response.data.error,
+            });
+        } else {
+            dispatch({
+                type: type.FETCH_FAIL,
+                payload: "Something went wrong, please try again later.",
+            });
+        }
+    }
+};
+
+export const deleteWhisper = (id: string, history: H.History) => async (
+    dispatch: Dispatch
+) => {
+    try {
+        await axios.delete(`/whisper/${id}/delete`);
+        dispatch({
+            type: type.DELETE_WHISPER,
+        });
+        history.push("/feed");
     } catch (err) {
         if (err.response.hasOwnProperty("data")) {
             dispatch({

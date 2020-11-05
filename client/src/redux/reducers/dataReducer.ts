@@ -25,12 +25,17 @@ interface AddWhisper {
     payload: Whisper[];
 }
 
+interface DeleteWhisper {
+    type: typeof type.DELETE_WHISPER;
+}
+
 type Actions =
     | AddWhisper
     | FetchWhisper
     | FetchWhispers
     | FetchFail
-    | FetchStart;
+    | FetchStart
+    | DeleteWhisper;
 
 const dataInitialState: Data = {
     dataError: "",
@@ -82,6 +87,11 @@ export const dataReducer = (state = dataInitialState, action: Actions) => {
                 ...state,
                 dataError: action.payload,
                 loadingData: "fail",
+            };
+        case type.DELETE_WHISPER:
+            return {
+                ...state,
+                whisper: {},
             };
         default:
             return state;
