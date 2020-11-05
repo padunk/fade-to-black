@@ -1,7 +1,6 @@
 import React from "react";
 import Container from "../Container/Container";
 import { RiImageAddFill } from "react-icons/ri";
-import Button from "../Button/Button";
 
 const FileInputField = ({
     field, // { name, value, onChange, onBlur }

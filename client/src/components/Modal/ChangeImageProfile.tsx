@@ -1,5 +1,5 @@
 import React from "react";
-import { Formik, Form, Field, FieldProps } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import Button from "../Button/Button";
 import Container from "../Container/Container";

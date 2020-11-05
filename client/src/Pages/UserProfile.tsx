@@ -7,8 +7,6 @@ import Button from "../components/Button/Button";
 import EditProfile from "../components/Modal/EditProfile";
 import ChangeImageProfile from "../components/Modal/ChangeImageProfile";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
-import { axios } from "../Axios";
-import { Whisper } from "types";
 import WhispersList from "../components/WhispersList/WhispersList";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { getAllWhispers } from "../redux/actions/dataActions";

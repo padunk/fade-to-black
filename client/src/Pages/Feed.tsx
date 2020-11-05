@@ -10,7 +10,6 @@ import Button from "../components/Button/Button";
 import user1 from "../assets/images/user1.jpg";
 import user2 from "../assets/images/user2.jpg";
 import user3 from "../assets/images/user3.jpg";
-import Card from "../components/Card/Card";
 import AddWhisper from "../components/Modal/AddWhisper";
 import Container from "../components/Container/Container";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
