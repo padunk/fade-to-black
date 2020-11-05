@@ -233,7 +233,7 @@ export const deleteWhisper = (req: any, res: Response) => {
         .get()
         .then((doc) => {
             if (!doc.exists) {
-                res.status(404).json({ err: "Whisper not found" });
+                res.status(404).json({ error: "Whisper not found" });
                 return;
             }
             if (doc.data()?.userName !== req.user.userName) {
