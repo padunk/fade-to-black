@@ -3,10 +3,12 @@ export const LOCAL_STORAGE_KEY = "Our_Stories_Token";
 
 // UI
 export const LOADING = "LOADING";
+export const LOADED = "LOADED";
+export const SET_ERROR = "SET_ERROR";
+export const CLEAR_ERROR = "CLEAR_ERROR";
 
 // Auth
 export const AUTH_ERROR = "AUTH_ERROR";
-export const CLEAR_ERROR = "CLEAR_ERROR";
 
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
@@ -22,6 +24,7 @@ export const SENT_RESET_PASSWORD = "SENT_RESET_PASSWORD";
 export const SET_USER = "SET_USER";
 export const USER_LOADED = "USER_LOADED";
 export const USER_LOADING = "USER_LOADING";
+export const USER_IMAGE_CHANGED = "USER_IMAGE_CHANGED";
 
 // DATA
 export const FETCH_FAIL = "FETCH_FAIL";
