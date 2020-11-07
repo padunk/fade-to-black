@@ -4,7 +4,6 @@ import * as BusBoy from "busboy";
 import * as path from "path";
 import * as os from "os";
 import * as fs from "fs";
-import { v4 as uuidV4 } from "uuid";
 import { admin, db } from "../util/admin";
 import { ImgProfile, UserCredentials } from "../util/types";
 import { updateLoginTime } from "../util/helpers";
@@ -92,7 +91,7 @@ export const userSignUp = (req: Request, res: Response) => {
 
 // LOGIN
 export const userLogIn = (req: Request, res: Response) => {
-    let id: string;
+    let id: string, refreshToken: string;
     firebase
         .auth()
         .signInWithEmailAndPassword(req.body.email, req.body.password)
@@ -102,10 +101,13 @@ export const userLogIn = (req: Request, res: Response) => {
                 // save login time
                 updateLoginTime(id);
             }
+            if (data.user?.refreshToken) {
+                refreshToken = data.user?.refreshToken;
+            }
             return data.user?.getIdToken();
         })
         .then((token) => {
-            res.json({ token });
+            res.json({ refreshToken, token });
         })
         .catch((err) => {
             console.log("err", err);
@@ -182,18 +184,20 @@ export const userForgotPassword = (req: Request, res: Response) => {
 
 export const uploadImageProfile = (req: any, res: Response) => {
     const busboy = new BusBoy({ headers: req.headers });
+    const mimeTypes = ["image/jpg", "image/jpeg", "image/png"];
 
     let imageToBeUploaded: ImgProfile;
 
     busboy.on(
         "file",
         (
-            _,
+            fieldName: string,
             file: NodeJS.ReadableStream,
             filename: string,
+            encoding: string,
             mimetype: string
         ) => {
-            if (mimetype !== "image/jpeg" && mimetype !== "image/png") {
+            if (!mimeTypes.includes(mimetype)) {
                 res.status(400).json({
                     error: "Wrong file type, please use either jpg or png",
                 });
@@ -201,13 +205,15 @@ export const uploadImageProfile = (req: any, res: Response) => {
             }
 
             const imageExtension = filename.match(/\w*$/);
-            const imageFilename = `${uuidV4()}.${imageExtension![0]}`;
+            const imageFilename = `${req.user.userName}-avatar.${
+                imageExtension![0]
+            }`;
             const filepath = path.join(os.tmpdir(), imageFilename);
             imageToBeUploaded = { filepath, mimetype };
             file.pipe(fs.createWriteStream(filepath));
         }
     );
-
+    let imageURL: string;
     // https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4
     busboy.on("finish", () => {
         return admin
@@ -222,15 +228,17 @@ export const uploadImageProfile = (req: any, res: Response) => {
                 },
             })
             .then((data) => {
-                // console.log("data", data[0].metadata);
                 const { bucket, name } = data[0].metadata;
-                const imageURL = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${name}?alt=media`;
+                imageURL = `https://firebasestorage.googleapis.com/v0/b/${bucket}/o/${name}?alt=media`;
                 return db
                     .doc(`/users/${req.user.userName}`)
                     .update({ imageURL });
             })
             .then(() => {
-                res.json({ message: "Image uploaded successfully " });
+                return res.json({
+                    imageURL: imageURL,
+                    message: "Image uploaded successfully ",
+                });
             })
             .catch((err) => {
                 res.status(500).json({ message: err.message });
