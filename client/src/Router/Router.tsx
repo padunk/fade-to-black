@@ -1,37 +1,20 @@
 import React from "react";
 import { connect } from "react-redux";
-import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { RootState } from "types";
 import Layout from "../Layout/Layout";
 import NotFound from "../Pages/404";
 import About from "../Pages/About";
 import Feed from "../Pages/Feed";
 import Home from "../Pages/Home";
-import { RootState } from "types";
 import WhisperDetail from "../Pages/WhisperDetail";
 import UserProfile from "../Pages/UserProfile";
 import UserDetail from "../Pages/UserDetail";
+import PrivateRoute from "./PrivateRoute";
 
-function PrivateRoute({ children, ...rest }: any) {
-    return (
-        <Route
-            {...rest}
-            render={({ location }) =>
-                rest.authenticated ? (
-                    children
-                ) : (
-                    <Redirect
-                        to={{
-                            pathname: "/",
-                            state: { from: location },
-                        }}
-                    />
-                )
-            }
-        />
-    );
-}
+type IRouterProps = ReturnType<typeof mapStateToProps>;
 
-const Router: React.FC<{ authenticated: boolean }> = ({ authenticated }) => {
+const Router: React.FC<IRouterProps> = ({ authenticated }) => {
     return (
         <BrowserRouter>
             <Layout>
