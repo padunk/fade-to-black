@@ -27,7 +27,9 @@ interface OtherAction {
         | typeof type.LOGIN_FAIL
         | typeof type.SIGNUP_FAIL
         | typeof type.LOGOUT_SUCCESS
-        | typeof type.LOGIN_SUCCESS;
+        | typeof type.LOGIN_SUCCESS
+        | typeof type.SET_AUTH
+        | typeof type.SET_UNAUTH;
 }
 
 type Actions =
@@ -50,6 +52,7 @@ export const userReducer = (
 ): User => {
     switch (action.type) {
         case type.LOGIN_SUCCESS:
+        case type.SET_AUTH:
             return {
                 ...state,
                 authenticated: true,
@@ -62,6 +65,7 @@ export const userReducer = (
                 authenticated: false,
             };
         case type.LOGOUT_SUCCESS:
+        case type.SET_UNAUTH:
             return {
                 authenticated: false,
                 credentials: null,
