@@ -17,14 +17,13 @@ const ProfileCardHeader: React.FC<IProfileCardHeaderProps> = ({
         <div className="border-b border-purple-800 w-full mb-8 pb-2 text-orange-500 stroke-current">
             <div className="flex flex-col items-center">
                 <div className="rounded-full w-32 h-32 overflow-hidden border-4 border-purple-300 mx-auto">
-                    {/* <img src={user?.imageURL} alt={user?.userName} /> */}
                     <img
-                        src={require("../../assets/images/user1.jpg")}
+                        src={user?.imageURL}
                         alt={user?.userName}
                         className="object-cover border-2 border-transparent rounded-full"
                     />
                 </div>
-                {isModalOpen && updateIsModalOpen && (
+                {updateIsModalOpen && (
                     <FiEdit
                         className="stroke-current ml-32 -mt-3 transform hover:scale-110 transition-transform duration-300 cursor-pointer"
                         onClick={() => updateIsModalOpen(!isModalOpen)}
