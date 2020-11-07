@@ -37,16 +37,16 @@ export const logIn = (
             dispatch({
                 type: type.LOGIN_SUCCESS,
             });
-            const storiesToken = `Bearer ${token}`;
+            const idToken = `Bearer ${token}`;
             const tokenData = {
-                storiesToken,
+                idToken,
                 refreshToken: data.refreshToken,
             };
             localStorage.setItem(
                 type.LOCAL_STORAGE_KEY,
                 JSON.stringify(tokenData)
             );
-            axios.defaults.headers.common["Authorization"] = storiesToken;
+            axios.defaults.headers.common["Authorization"] = idToken;
             getUserData()(dispatch);
             history.push(redirectPage);
         }
