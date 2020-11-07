@@ -29,17 +29,29 @@ interface DeleteWhisper {
     type: typeof type.DELETE_WHISPER;
 }
 
+interface LikeWhisper {
+    type: typeof type.LIKE_WHISPER;
+    payload: Whisper;
+}
+
+interface UnlikeWhisper {
+    type: typeof type.UNLIKE_WHISPER;
+    payload: Whisper;
+}
+
 type Actions =
     | AddWhisper
     | FetchWhisper
     | FetchWhispers
     | FetchFail
     | FetchStart
-    | DeleteWhisper;
+    | DeleteWhisper
+    | LikeWhisper
+    | UnlikeWhisper;
 
 const dataInitialState: Data = {
     dataError: "",
-    loadingData: "success",
+    loadingData: "pending",
     whisper: {
         body: "",
         commentCount: 0,
@@ -92,6 +104,19 @@ export const dataReducer = (state = dataInitialState, action: Actions) => {
             return {
                 ...state,
                 whisper: {},
+            };
+        case type.LIKE_WHISPER:
+        case type.UNLIKE_WHISPER:
+            const newWhispers = state.whispers.slice();
+            const index = state.whispers.findIndex(
+                (whisper) => whisper.id === action.payload.id
+            );
+            newWhispers[index] = action.payload;
+            return {
+                ...state,
+                whisper:
+                    state.whisper.id === action.payload.id && action.payload,
+                whispers: newWhispers,
             };
         default:
             return state;

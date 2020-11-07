@@ -126,10 +126,10 @@ export const postComment = (req: any, res: Response) => {
         });
 };
 
-export const isLike = (req: Request, res: Response) => {
+export const isLike = (req: any, res: Response) => {
     db.collection("likes")
-        .where("userName", "==", req.body.userName)
-        .where("whisperID", "==", req.body.whisperID)
+        .where("userName", "==", req.user.userName)
+        .where("whisperID", "==", req.params.whisperID)
         .limit(1)
         .get()
         .then((doc) => {

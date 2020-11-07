@@ -57,13 +57,13 @@ app.get("/whisper/:whisperID", getWhisper);
 app.delete("/whisper/:whisperID/delete", firebaseAuth, deleteWhisper);
 
 // like a whisper
-app.post("/whisper/:whisperID/like", firebaseAuth, likeWhisper);
+app.get("/whisper/:whisperID/like", firebaseAuth, likeWhisper);
 
 // is user already like a whisper?
-app.post("/whisper/is-like", isLike);
+app.get("/whisper/:whisperID/is-like", firebaseAuth, isLike);
 
 // unlike a whisper
-app.post("/whisper/:whisperID/unlike", firebaseAuth, unLikeWhisper);
+app.get("/whisper/:whisperID/unlike", firebaseAuth, unLikeWhisper);
 
 // COMMENT
 // comment a whisper

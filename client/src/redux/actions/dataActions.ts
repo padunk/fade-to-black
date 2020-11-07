@@ -83,3 +83,31 @@ export const deleteWhisper = (id: string, history: H.History) => async (
         }
     }
 };
+
+export const likeWhisper = (whisperID: string) => async (
+    dispatch: Dispatch
+) => {
+    try {
+        const response = await axios.get(`/whisper/${whisperID}/like`);
+        dispatch({
+            type: type.LIKE_WHISPER,
+            payload: (await response).data,
+        });
+    } catch (err) {
+        console.log("err", err);
+    }
+};
+
+export const unlikeWhisper = (whisperID: string) => async (
+    dispatch: Dispatch
+) => {
+    try {
+        const response = await axios.get(`/whisper/${whisperID}/unlike`);
+        dispatch({
+            type: type.UNLIKE_WHISPER,
+            payload: (await response).data,
+        });
+    } catch (err) {
+        console.log("err", err);
+    }
+};
