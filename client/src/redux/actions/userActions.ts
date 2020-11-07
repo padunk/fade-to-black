@@ -12,8 +12,12 @@ const getUserData = () => async (dispatch: Dispatch): Promise<void> => {
             type: type.SET_USER,
             payload: (await response).data,
         });
-    } catch (error) {
-        console.log("getUserDataError :>> ", error);
+    } catch (err) {
+        console.log("getUserDataError :>> ", err);
+        dispatch({
+            type: type.SET_ERROR,
+            payload: err.response.data.error,
+        });
     }
 };
 
@@ -27,13 +31,21 @@ export const logIn = (
     });
     try {
         const response = await axios.post("/login", JSON.stringify(userData));
-        const token = await response.data.token;
+        const data = await response.data;
+        const token = data.token;
         if (token !== "") {
             dispatch({
                 type: type.LOGIN_SUCCESS,
             });
             const storiesToken = `Bearer ${token}`;
-            localStorage.setItem(type.LOCAL_STORAGE_KEY, storiesToken);
+            const tokenData = {
+                storiesToken,
+                refreshToken: data.refreshToken,
+            };
+            localStorage.setItem(
+                type.LOCAL_STORAGE_KEY,
+                JSON.stringify(tokenData)
+            );
             axios.defaults.headers.common["Authorization"] = storiesToken;
             getUserData()(dispatch);
             history.push(redirectPage);
@@ -59,11 +71,11 @@ export const logOut = (history: H.History) => async (
     localStorage.removeItem(type.LOCAL_STORAGE_KEY);
     try {
         await axios.post("/logout");
+        delete axios.defaults.headers.common;
         dispatch({ type: type.LOGOUT_SUCCESS });
     } catch (error) {
         console.error(error);
     } finally {
-        delete axios.defaults.headers.common;
         history.push("/");
     }
 };
@@ -142,16 +154,35 @@ export const editProfile = (data: UpdateUserProfile) => async (
         await axios.post("/user", data);
         getUserData()(dispatch);
     } catch (err) {
-        if (err.response.hasOwnProperty("data")) {
-            dispatch({
-                type: type.AUTH_ERROR,
-                payload: err.response.data.error,
-            });
-        } else {
-            dispatch({
-                type: type.AUTH_ERROR,
-                payload: "Something went wrong, please try again later.",
-            });
-        }
+        dispatch({
+            type: type.SET_ERROR,
+            payload: err.response.data.error,
+        });
+    }
+};
+
+export const uploadAvatar = (
+    imageData: FormData,
+    setModalStatus: React.Dispatch<React.SetStateAction<boolean>>
+) => async (dispatch: Dispatch): Promise<void> => {
+    dispatch({
+        type: type.LOADING,
+    });
+    try {
+        const response = await axios.post("/user/image", imageData);
+        const data = await response.data;
+        dispatch({
+            type: type.USER_IMAGE_CHANGED,
+            payload: data.imageURL,
+        });
+        dispatch({
+            type: type.LOADED,
+        });
+        setModalStatus(false);
+    } catch (err) {
+        dispatch({
+            type: type.SET_ERROR,
+            payload: err.response.data.error,
+        });
     }
 };

@@ -1,9 +1,24 @@
-import { User, UserCredentials } from "types";
+import { User, UserCredentials, Whisper } from "types";
 import * as type from "../actions/constants";
 
 interface SetUserAction {
     type: typeof type.SET_USER;
     payload: UserCredentials;
+}
+
+interface SetUserImage {
+    type: typeof type.USER_IMAGE_CHANGED;
+    payload: string;
+}
+
+interface LikeWhisper {
+    type: typeof type.LIKE_WHISPER;
+    payload: Whisper;
+}
+
+interface UnlikeWhisper {
+    type: typeof type.UNLIKE_WHISPER;
+    payload: Whisper;
 }
 
 interface OtherAction {
@@ -15,7 +30,12 @@ interface OtherAction {
         | typeof type.LOGIN_SUCCESS;
 }
 
-type Actions = SetUserAction | OtherAction;
+type Actions =
+    | LikeWhisper
+    | UnlikeWhisper
+    | SetUserAction
+    | SetUserImage
+    | OtherAction;
 
 const userInitialState: User = {
     authenticated: false,
@@ -52,6 +72,36 @@ export const userReducer = (
             return {
                 ...state,
                 ...action.payload,
+            };
+        case type.USER_IMAGE_CHANGED:
+            if (state.credentials) {
+                return {
+                    ...state,
+                    credentials: {
+                        ...state.credentials,
+                        imageURL: action.payload,
+                    },
+                };
+            } else {
+                return state;
+            }
+        case type.LIKE_WHISPER:
+            return {
+                ...state,
+                likes: [
+                    ...state.likes,
+                    {
+                        userName: state.credentials?.userName,
+                        whisperID: action.payload.id,
+                    },
+                ],
+            };
+        case type.UNLIKE_WHISPER:
+            return {
+                ...state,
+                likes: state.likes.filter(
+                    (like) => like.whisperID !== action.payload.id
+                ),
             };
         default:
             return state;

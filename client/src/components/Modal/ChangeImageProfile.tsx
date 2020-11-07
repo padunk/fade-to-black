@@ -6,7 +6,10 @@ import Container from "../Container/Container";
 import ModalHeader from "./components/ModalHeader";
 import Close from "./components/Close";
 import FileInputField from "../InputField/FileInputField";
-import { axios } from "../../Axios";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
+import { uploadAvatar } from "../../redux/actions/userActions";
+import { connect } from "react-redux";
+import { RootState } from "types";
 
 const FILE_SIZE = 2000 * 1024; // 2mb
 const SUPPORTED_FORMAT_IMAGES = ["image/jpg", "image/jpeg", "image/png"];
@@ -23,13 +26,18 @@ const ImageProfileSchema = Yup.object().shape({
         ),
 });
 
-type IAddWhisperProps = {
-    setModalStatus: React.Dispatch<React.SetStateAction<boolean>>;
-};
+type IAddWhisperProps = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof mapDispatchToProps> & {
+        setModalStatus: React.Dispatch<React.SetStateAction<boolean>>;
+    };
 
-const ChangeImageProfile: React.FC<IAddWhisperProps> = ({ setModalStatus }) => {
+const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
+    errorMessage,
+    loading,
+    setModalStatus,
+    uploadAvatar,
+}) => {
     const [file, setFile] = React.useState<Blob | string>("");
-    const [errorUpload, setErrorUpload] = React.useState<string>("");
 
     return (
         <div
@@ -56,13 +64,7 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({ setModalStatus }) => {
                                 values.imageProfile?.name
                             );
                         }
-                        axios
-                            .post("/user/image", imageData)
-                            .then(() => setModalStatus(false))
-                            .catch((err) => {
-                                console.log("err", err);
-                                setErrorUpload(err.message);
-                            });
+                        uploadAvatar(imageData, setModalStatus);
                     }}
                 >
                     {({ isValid, dirty, setFieldValue }) => (
@@ -78,12 +80,12 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({ setModalStatus }) => {
                                     type="submit"
                                     title="Upload"
                                     looks="main"
-                                    disabled={!(dirty && isValid)}
+                                    disabled={!(dirty && isValid) || loading}
                                 />
                             </div>
-                            {errorUpload && (
+                            {errorMessage && (
                                 <span className="text-sm text-red-500">
-                                    {errorUpload}
+                                    {errorMessage}
                                 </span>
                             )}
                         </Form>
@@ -94,4 +96,20 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({ setModalStatus }) => {
     );
 };
 
-export default ChangeImageProfile;
+const mapStateToProps = (state: RootState) => {
+    return {
+        errorMessage: state.ui.errorMessage,
+        loading: state.ui.loading,
+    };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+    return bindActionCreators(
+        {
+            uploadAvatar,
+        },
+        dispatch
+    );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChangeImageProfile);
