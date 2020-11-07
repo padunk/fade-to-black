@@ -14,64 +14,10 @@ type ParamsObject = {
     whisperID: string;
 };
 
-const fakeData = {
-    body: "test from postman",
-    commentCount: 2,
-    comments: [
-        {
-            body: "very cool whisper2",
-            createdAt: 1602995884152,
-            userImage:
-                "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
-            userName: "user",
-            whisperID: "Snr2IK0HnetDu51GSx18",
-        },
-        {
-            body: "very cool whisper",
-            createdAt: 1602995843389,
-            userImage:
-                "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
-            userName: "user",
-            whisperID: "Snr2IK0HnetDu51GSx18",
-        },
-        {
-            body: "very cool whisper",
-            createdAt: 1602995843389,
-            userImage:
-                "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
-            userName: "user",
-            whisperID: "Snr2IK0HnetDu51GSx18",
-        },
-        {
-            body: "very cool whisper",
-            createdAt: 1602995843389,
-            userImage:
-                "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
-            userName: "user",
-            whisperID: "Snr2IK0HnetDu51GSx18",
-        },
-        {
-            body: "very cool whisper",
-            createdAt: 1602995843389,
-            userImage:
-                "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
-            userName: "user",
-            whisperID: "Snr2IK0HnetDu51GSx18",
-        },
-    ],
-    createdAt: 1602993808935,
-    id: "Snr2IK0HnetDu51GSx18",
-    lifeTime: 300000,
-    likeCount: 0,
-    userImage:
-        "https://firebasestorage.googleapis.com/v0/b/fade-to-black-f3f53.appspot.com/o/no-img.png?alt=media&token=53ee1f63-23ca-4537-b14b-ec109719bcf4",
-    userName: "user1",
-};
-
 const WhisperDetail = () => {
     const history = useHistory();
     const params: ParamsObject = useParams();
-    const [whisper, setWhisper] = React.useState<Whisper | null>(fakeData);
+    const [whisper, setWhisper] = React.useState<Whisper | null>(null);
     const [fetchWhisperStatus, setfetchStatus] = React.useState<string>(
         "success"
     );
@@ -93,7 +39,7 @@ const WhisperDetail = () => {
     };
 
     React.useEffect(() => {
-        // getWhisperDetail(params.whisperID);
+        getWhisperDetail(params.whisperID);
     }, []);
 
     const renderComments = (comments: Comments[]) => {

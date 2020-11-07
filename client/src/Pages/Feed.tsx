@@ -5,48 +5,11 @@ import { logOut } from "../redux/actions/userActions";
 import { addWhisper, getAllWhispers } from "../redux/actions/dataActions";
 import { RootState, Whisper } from "types";
 import { GrAdd } from "react-icons/gr";
-
 import Button from "../components/Button/Button";
-import user1 from "../assets/images/user1.jpg";
-import user2 from "../assets/images/user2.jpg";
-import user3 from "../assets/images/user3.jpg";
 import AddWhisper from "../components/Modal/AddWhisper";
 import Container from "../components/Container/Container";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import WhispersList from "../components/WhispersList/WhispersList";
-
-const fakeData = [
-    {
-        body: "post from user3",
-        commentCount: 0,
-        createdAt: 1603075929268,
-        id: "xn7hHdmHJeqSYGX8syzt",
-        lifeTime: 300000,
-        likeCount: 0,
-        userImage: user3,
-        userName: "user3",
-    },
-    {
-        body: "test from postman",
-        commentCount: 2,
-        createdAt: 1602993808935,
-        id: "Snr2IK0HnetDu51GSx18",
-        lifeTime: 300000,
-        likeCount: 0,
-        userImage: user2,
-        userName: "user1",
-    },
-    {
-        body: "hello again...",
-        commentCount: 1,
-        createdAt: 1602223200000,
-        id: "HzxggYT2Z6hZSGjQkA4O",
-        lifeTime: 300000,
-        likeCount: 0,
-        userImage: user1,
-        userName: "user",
-    },
-];
 
 type IFeedProps = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
@@ -59,16 +22,15 @@ const Feed: React.FC<IFeedProps> = ({
     loadingData,
     logOut,
     userName,
-    // whispers,
+    whispers,
 }) => {
     const history = useHistory();
     const [addWhisperModalOpen, setAddWhisperModalOpen] = React.useState<
         boolean
     >(false);
-    const whispers = fakeData;
 
     React.useEffect(() => {
-        // getAllWhispers("/whispers");
+        getAllWhispers("/whispers");
     }, []);
 
     return (
@@ -77,7 +39,7 @@ const Feed: React.FC<IFeedProps> = ({
                 <Link to={`/profile/${userName}`}>
                     <div className="w-12 h-12 rounded-full border-2 border-purple-600 cursor-pointer overflow-hidden">
                         <img
-                            src={require("../assets/images/user1.jpg")}
+                            src={imageURL}
                             alt={`${userName} avatar`}
                             className="rounded-full border border-transparent border-solid transform hover:scale-105 transition-transform duration-300"
                         />
