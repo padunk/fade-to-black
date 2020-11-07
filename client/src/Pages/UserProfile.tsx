@@ -26,11 +26,10 @@ const UserProfile: React.FC<IUserProfileProps> = ({
     const [imageModal, updateImageModal] = React.useState<boolean>(false);
 
     React.useEffect(() => {
-        if (user?.userName) {
+        if (user !== null && user.userName !== undefined) {
             getAllWhispers(`/whispers/${user.userName}`);
         }
-        getAllWhispers("/whispers/user");
-    }, []);
+    }, [user?.userName]);
 
     return (
         <div className="relative">
