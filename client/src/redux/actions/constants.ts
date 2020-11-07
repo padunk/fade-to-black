@@ -9,15 +9,13 @@ export const CLEAR_ERROR = "CLEAR_ERROR";
 
 // Auth
 export const AUTH_ERROR = "AUTH_ERROR";
-
+export const SET_AUTH = "SET_AUTH";
+export const SET_UNAUTH = "SET_UNAUTH";
 export const LOGIN_FAIL = "LOGIN_FAIL";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
-
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
-
 export const SIGNUP_FAIL = "SIGNUP_FAIL";
 export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
-
 export const SENT_RESET_PASSWORD = "SENT_RESET_PASSWORD";
 
 // USER
