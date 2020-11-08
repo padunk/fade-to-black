@@ -67,6 +67,7 @@ export const deleteWhisper = (id: string, history: H.History) => async (
         await axios.delete(`/whisper/${id}/delete`);
         dispatch({
             type: type.DELETE_WHISPER,
+            payload: id,
         });
         history.push("/feed");
     } catch (err) {

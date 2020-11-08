@@ -27,6 +27,7 @@ interface AddWhisper {
 
 interface DeleteWhisper {
     type: typeof type.DELETE_WHISPER;
+    payload: string;
 }
 
 interface LikeWhisper {
@@ -67,13 +68,15 @@ const dataInitialState: Data = {
 };
 
 export const dataReducer = (state = dataInitialState, action: Actions) => {
+    const newWhispers = state.whispers.slice();
+
     switch (action.type) {
         case type.ADD_WHISPER:
             return {
                 ...state,
                 dataError: "",
                 loadingData: "success",
-                whispers: [...state.whispers, ...action.payload],
+                whispers: [...action.payload, ...state.whispers],
             };
         case type.FETCH_WHISPER:
             return {
@@ -104,10 +107,12 @@ export const dataReducer = (state = dataInitialState, action: Actions) => {
             return {
                 ...state,
                 whisper: {},
+                whispers: state.whispers.filter(
+                    (whisper) => whisper.id !== action.payload
+                ),
             };
         case type.LIKE_WHISPER:
         case type.UNLIKE_WHISPER:
-            const newWhispers = state.whispers.slice();
             const index = state.whispers.findIndex(
                 (whisper) => whisper.id === action.payload.id
             );
