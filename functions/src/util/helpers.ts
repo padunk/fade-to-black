@@ -8,7 +8,7 @@ export const updateLoginTime = (id: string) => {
         .then((user) =>
             user.forEach((u) =>
                 u.ref.update({
-                    lasLogin: new Date().getTime(),
+                    lastLogin: new Date().getTime(),
                 })
             )
         );
