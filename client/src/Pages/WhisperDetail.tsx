@@ -40,7 +40,7 @@ const WhisperDetail = () => {
 
     React.useEffect(() => {
         getWhisperDetail(params.whisperID);
-    }, []);
+    }, [params.whisperID]);
 
     const renderComments = (comments: Comments[]) => {
         return comments.map((comment) => {

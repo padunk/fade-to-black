@@ -29,7 +29,7 @@ const UserDetail = () => {
         };
 
         getUserDetails(params.userName);
-    }, []);
+    }, [params.userName]);
     return (
         <div className="relative">
             {fetchStatus === "pending" ? (

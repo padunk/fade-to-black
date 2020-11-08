@@ -31,7 +31,7 @@ const Feed: React.FC<IFeedProps> = ({
 
     React.useEffect(() => {
         getAllWhispers("/whispers");
-    }, []);
+    }, [getAllWhispers]);
 
     return (
         <div className="relative">

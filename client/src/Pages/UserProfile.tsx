@@ -29,7 +29,7 @@ const UserProfile: React.FC<IUserProfileProps> = ({
         if (user !== null && user.userName !== undefined) {
             getAllWhispers(`/whispers/${user.userName}`);
         }
-    }, [user?.userName]);
+    }, [getAllWhispers, user]);
 
     return (
         <div className="relative">
