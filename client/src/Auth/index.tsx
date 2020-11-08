@@ -7,8 +7,10 @@ import { forgotPassword, logIn, signUp } from "../redux/actions/userActions";
 import { clearError } from "../redux/actions/uiActions";
 import Welcome from "./components/Welcome";
 import { RootState } from "types";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
 
-type AuthProps = ReturnType<typeof mapStateToProps> & typeof dispatchToProps;
+type AuthProps = ReturnType<typeof mapStateToProps> &
+    ReturnType<typeof dispatchToProps>;
 
 const Auth: React.FC<AuthProps> = ({
     authenticated,
@@ -83,13 +85,16 @@ const mapStateToProps = (state: RootState) => {
     };
 };
 
-const dispatchToProps = {
-    clearError,
-    forgotPassword,
-    logIn,
-    signUp,
+const dispatchToProps = (dispatch: Dispatch<AnyAction>) => {
+    return bindActionCreators(
+        {
+            clearError,
+            forgotPassword,
+            logIn,
+            signUp,
+        },
+        dispatch
+    );
 };
 
-// TODO: I don't know how to fix this one
-// @ts-ignore
 export default connect(mapStateToProps, dispatchToProps)(Auth);
