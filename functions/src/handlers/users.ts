@@ -91,7 +91,7 @@ export const userSignUp = (req: Request, res: Response) => {
 
 // LOGIN
 export const userLogIn = (req: Request, res: Response) => {
-    let id: string, refreshToken: string;
+    let id: string;
     firebase
         .auth()
         .signInWithEmailAndPassword(req.body.email, req.body.password)
@@ -101,13 +101,18 @@ export const userLogIn = (req: Request, res: Response) => {
                 // save login time
                 updateLoginTime(id);
             }
-            if (data.user?.refreshToken) {
-                refreshToken = data.user?.refreshToken;
-            }
             return data.user?.getIdToken();
         })
         .then((token) => {
-            res.json({ refreshToken, token });
+            const metadataRef = db.doc(`metadata/${id}`);
+            metadataRef.get().then((doc) => {
+                if (doc.exists) {
+                    return;
+                } else {
+                    metadataRef.set({ revokeTime: new Date().getTime() });
+                }
+            });
+            return res.json({ token });
         })
         .catch((err) => {
             console.log("err", err);
