@@ -40,7 +40,6 @@ const AddComment: React.FC<IAddCommentProps> = ({
                     }}
                     validationSchema={AddCommentSchema}
                     onSubmit={(values) => {
-                        console.log("values", values);
                         setModalStatus(false);
                         if (id) {
                             submitNewComment(id, values);
