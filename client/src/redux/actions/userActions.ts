@@ -4,7 +4,7 @@ import * as type from "./constants";
 import { Login, SignUp, UpdateUserProfile } from "types";
 import * as H from "history";
 
-const getUserData = () => async (dispatch: Dispatch): Promise<void> => {
+export const getUserData = () => async (dispatch: Dispatch): Promise<void> => {
     try {
         const response = await axios.get("/user");
 
@@ -32,26 +32,20 @@ export const logIn = (
     try {
         const response = await axios.post("/login", JSON.stringify(userData));
         const data = await response.data;
-        const token = data.token;
-        if (token !== "") {
-            dispatch({
-                type: type.LOGIN_SUCCESS,
-            });
-            const idToken = `Bearer ${token}`;
-            const tokenData = {
-                idToken,
-                refreshToken: data.refreshToken,
-            };
-            localStorage.setItem(
-                type.LOCAL_STORAGE_KEY,
-                JSON.stringify(tokenData)
-            );
-            axios.defaults.headers.common["Authorization"] = idToken;
-            getUserData()(dispatch);
-            history.push(redirectPage);
-        }
+        const idToken: string = `Bearer ${data.token}`;
+
+        window.localStorage.setItem(type.LOCAL_STORAGE_KEY, idToken);
+        axios.defaults.headers.common["Authorization"] = idToken;
+        await getUserData()(dispatch);
+        dispatch({
+            type: type.LOGIN_SUCCESS,
+        });
+        dispatch({
+            type: type.CLEAR_ERROR,
+        });
+        history.push(redirectPage);
     } catch (err) {
-        if (err.response.hasOwnProperty("data")) {
+        if (err.response && err.response.hasOwnProperty("data")) {
             dispatch({
                 type: type.LOGIN_FAIL,
                 payload: err.response.data.error,
