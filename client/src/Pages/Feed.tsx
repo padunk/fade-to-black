@@ -10,6 +10,7 @@ import AddWhisper from "../components/Modal/AddWhisper";
 import Container from "../components/Container/Container";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import WhispersList from "../components/WhispersList/WhispersList";
+import Loading from "../components/Loading/Loading";
 
 type IFeedProps = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
@@ -57,7 +58,7 @@ const Feed: React.FC<IFeedProps> = ({
             <section>
                 {loadingData === "pending" ? (
                     <Container className="min-w-full min-h-screen">
-                        <div className="text-center text-3xl p-2">Loading</div>
+                        <Loading />
                     </Container>
                 ) : loadingData === "error" && dataError !== "" ? (
                     <Container className="min-w-full min-h-screen">

@@ -10,6 +10,8 @@ import ProfileCard from "../components/ProfileCard/ProfileCard";
 import WhispersList from "../components/WhispersList/WhispersList";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { getAllWhispers } from "../redux/actions/dataActions";
+import Loading from "../components/Loading/Loading";
+import Container from "../components/Container/Container";
 
 type IUserProfileProps = ReturnType<typeof mapStateToProps> &
     ReturnType<typeof mapDispatchToProps>;
@@ -49,19 +51,19 @@ const UserProfile: React.FC<IUserProfileProps> = ({
                     updateIsModalOpen={updateImageModal}
                 />
             )}
-            <div>
+            <Container>
                 <Button
                     title="Edit Profile"
                     looks="main"
                     onClick={() => updateEditModal(!editModal)}
                 />
-            </div>
+            </Container>
             {editModal && <EditProfile setModalStatus={updateEditModal} />}
             {imageModal && (
                 <ChangeImageProfile setModalStatus={updateImageModal} />
             )}
             {loading === "pending" ? (
-                <div>Loading</div>
+                <Loading />
             ) : loading === "error" && error !== "" ? (
                 <div>{error}</div>
             ) : (

@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import { axios } from "../Axios";
+import Loading from "../components/Loading/Loading";
 import ProfileCard from "../components/ProfileCard/ProfileCard";
 import WhispersList from "../components/WhispersList/WhispersList";
 
@@ -33,7 +34,7 @@ const UserDetail = () => {
     return (
         <div className="relative">
             {fetchStatus === "pending" ? (
-                <div>Loading</div>
+                <Loading />
             ) : fetchStatus === "fail" ? (
                 <div>{errorMessage}</div>
             ) : (

@@ -9,6 +9,7 @@ import Card from "../components/Card/Card";
 import AddComment from "../components/Modal/AddComment";
 import Button from "../components/Button/Button";
 import Container from "../components/Container/Container";
+import Loading from "../components/Loading/Loading";
 
 type ParamsObject = {
     whisperID: string;
@@ -88,7 +89,7 @@ const WhisperDetail = () => {
             {fetchWhisperStatus === "fail" ? (
                 <Container>Error: {errorMessage}</Container>
             ) : whisper === null || fetchWhisperStatus === "loading" ? (
-                <Container>Loading</Container>
+                <Loading />
             ) : (
                 <div className="flex flex-col w-full">
                     <Card whisper={whisper} />
