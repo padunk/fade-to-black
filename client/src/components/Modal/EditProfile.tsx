@@ -35,7 +35,7 @@ const EditProfile: React.FC<IEditProfileProps> = ({
             className="absolute z-10 inset-0 bg-gray-800 flex flex-col justify-center items-center bg-opacity-75"
             style={{
                 backdropFilter: "blur(30px)",
-                height: "calc(100vh - 72px)",
+                minHeight: "calc(100vh - 72px)",
             }}
         >
             <Close openModal={setModalStatus} />
