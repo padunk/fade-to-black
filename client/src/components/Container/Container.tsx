@@ -10,7 +10,11 @@ const Container: React.VFC<IContainerProps> = (props) => {
     return (
         <div
             {...props}
-            className={props.className && props.className + defaultClassName}
+            className={
+                props.className
+                    ? props.className + defaultClassName
+                    : defaultClassName
+            }
         >
             {props.children}
         </div>
