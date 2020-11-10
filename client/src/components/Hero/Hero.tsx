@@ -32,7 +32,7 @@ const Hero = () => {
                 style={{ backgroundColor: "rgba(0,0,0, 0.4)" }}
             >
                 <h1 className="font-bold text-4xl lg:text-6xl text-orange-400">
-                    Our Stories
+                    Our Whispers
                 </h1>
                 <p>is all about what we write now and</p>
                 <p>what will be forgotten soon...</p>
