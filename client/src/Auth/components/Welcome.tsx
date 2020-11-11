@@ -2,6 +2,7 @@ import React from "react";
 import { UserCredentials } from "types";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { gsap } from "gsap";
 
 dayjs.extend(relativeTime);
 
@@ -10,6 +11,34 @@ type IWelcomeProps = {
 };
 
 const Welcome: React.FC<IWelcomeProps> = ({ credentials }) => {
+    const [lastLoginTime, updateLastLoginTime] = React.useState<string>("");
+    const timeRef = React.useRef(null);
+
+    React.useEffect(() => {
+        updateLastLoginTime(dayjs().from(dayjs(credentials?.lastLogin), true));
+    }, [credentials]);
+
+    React.useEffect(() => {
+        const oneMinute = 60 * 1000; // in ms
+
+        const loginTimeID = setInterval(() => {
+            updateLastLoginTime(
+                dayjs().from(dayjs(credentials?.lastLogin), true)
+            );
+            gsap.timeline()
+                .to(timeRef.current, {
+                    duration: 1,
+                    transform: "rotateX(90deg)",
+                })
+                .to(timeRef.current, {
+                    duration: 1,
+                    transform: "rotateX(0)",
+                });
+        }, oneMinute);
+
+        return () => clearInterval(loginTimeID);
+    }, [credentials, timeRef.current]);
+
     const showWelcome = () =>
         credentials !== null ? (
             <div className="flex flex-col justify-center">
@@ -17,8 +46,11 @@ const Welcome: React.FC<IWelcomeProps> = ({ credentials }) => {
                     Hi {credentials.userName}!
                 </h2>
                 <p>You have been logged in for: </p>
-                <strong className="block text-4xl text-purple-600">
-                    {dayjs().from(dayjs(credentials.lastLogin), true)}
+                <strong
+                    ref={timeRef}
+                    className="block text-4xl text-purple-600"
+                >
+                    {lastLoginTime}
                 </strong>
             </div>
         ) : (
