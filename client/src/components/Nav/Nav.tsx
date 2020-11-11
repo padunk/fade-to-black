@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import logo from "../../logo.svg";
 import { RootState } from "types";
+import Notifications from "../Notifications/Notifications";
 
 type INavbarProps = {
     authenticated: boolean;
@@ -19,9 +20,14 @@ const Navbar: React.FC<INavbarProps> = ({ authenticated }) => {
                     <Link to="/">HOME</Link>{" "}
                 </li>
                 {authenticated && (
-                    <li className="italic">
-                        <Link to="/feed">Whispers</Link>{" "}
-                    </li>
+                    <>
+                        <li className="italic">
+                            <Link to="/feed">Whispers</Link>{" "}
+                        </li>
+                        <li className="flex items-center relative">
+                            <Notifications />
+                        </li>
+                    </>
                 )}
                 <li>
                     <Link to="/About">ABOUT</Link>{" "}

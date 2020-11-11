@@ -36,7 +36,7 @@ export const logIn = (
 
         window.localStorage.setItem(type.LOCAL_STORAGE_KEY, idToken);
         axios.defaults.headers.common["Authorization"] = idToken;
-        await getUserData()(dispatch);
+        getUserData()(dispatch);
         dispatch({
             type: type.LOGIN_SUCCESS,
         });
@@ -178,5 +178,18 @@ export const uploadAvatar = (
             type: type.SET_ERROR,
             payload: err.response.data.error,
         });
+    }
+};
+
+export const markNotificationsRead = (ids: any) => async (
+    dispatch: Dispatch
+) => {
+    try {
+        await axios.post("/notifications", ids);
+        dispatch({
+            type: type.MARK_NOTIFICATIONS_READ,
+        });
+    } catch (err) {
+        console.log("err", err);
     }
 };

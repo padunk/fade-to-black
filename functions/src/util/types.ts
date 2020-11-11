@@ -52,9 +52,10 @@ export type ImgProfile = {
 // Notifications
 export type Notifications = {
     createdAt: number;
+    notificationID: string;
     read: boolean;
     recipient: string;
     sender: string;
-    type: string;
+    type: "like" | "comment";
     whisperID: string;
 };

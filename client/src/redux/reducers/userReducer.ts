@@ -29,7 +29,8 @@ interface OtherAction {
         | typeof type.LOGOUT_SUCCESS
         | typeof type.LOGIN_SUCCESS
         | typeof type.SET_AUTH
-        | typeof type.SET_UNAUTH;
+        | typeof type.SET_UNAUTH
+        | typeof type.MARK_NOTIFICATIONS_READ;
 }
 
 type Actions =
@@ -106,6 +107,15 @@ export const userReducer = (
                 likes: state.likes.filter(
                     (like) => like.whisperID !== action.payload.id
                 ),
+            };
+        case type.MARK_NOTIFICATIONS_READ:
+            const newNotif = state.notifications.map((notif) => ({
+                ...notif,
+                read: true,
+            }));
+            return {
+                ...state,
+                notifications: newNotif,
             };
         default:
             return state;
