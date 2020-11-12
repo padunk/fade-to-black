@@ -157,7 +157,9 @@ export const editProfile = (data: UpdateUserProfile) => async (
 
 export const uploadAvatar = (
     imageData: FormData,
-    setModalStatus: React.Dispatch<React.SetStateAction<boolean>>
+    setModalStatus: React.Dispatch<React.SetStateAction<boolean>>,
+    history: H.History,
+    userName: string
 ) => async (dispatch: Dispatch): Promise<void> => {
     dispatch({
         type: type.LOADING,
@@ -173,6 +175,7 @@ export const uploadAvatar = (
             type: type.LOADED,
         });
         setModalStatus(false);
+        history.push(`/profile/user/${userName}`);
     } catch (err) {
         dispatch({
             type: type.SET_ERROR,
