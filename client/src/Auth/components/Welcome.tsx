@@ -37,7 +37,7 @@ const Welcome: React.FC<IWelcomeProps> = ({ credentials }) => {
         }, oneMinute);
 
         return () => clearInterval(loginTimeID);
-    }, [credentials, timeRef.current]);
+    }, [credentials]);
 
     const showWelcome = () =>
         credentials !== null ? (
@@ -56,7 +56,7 @@ const Welcome: React.FC<IWelcomeProps> = ({ credentials }) => {
         ) : (
             <div>
                 <h2 className="text-4xl text-orange-500">
-                    Welcome to Our Stories!
+                    Welcome to Whispers!
                 </h2>
             </div>
         );
