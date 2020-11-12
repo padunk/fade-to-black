@@ -85,10 +85,10 @@ const Feed: React.FC<IFeedProps> = ({
                 )}
             </section>
             <div
-                className="absolute right-0 bottom-0 ml-4 mb-4 bg-orange-500 bg-opacity-75 rounded-full p-2 hover:bg-opacity-100 transition-opacity duration-300 cursor-pointer"
+                className="absolute right-0 bottom-0 mr-4 mb-4 bg-orange-500 bg-opacity-75 rounded-full p-2 hover:bg-opacity-100 transition-opacity duration-300 cursor-pointer"
                 onClick={() => setAddWhisperModalOpen(!addWhisperModalOpen)}
             >
-                <GrAdd />
+                <GrAdd className="text-md md:text-xl lg:text-2xl" />
             </div>
             {addWhisperModalOpen && (
                 <AddWhisper

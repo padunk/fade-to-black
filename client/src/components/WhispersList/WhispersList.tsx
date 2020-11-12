@@ -9,7 +9,7 @@ type IWhispersList = {
 
 const WhispersList: React.FC<IWhispersList> = ({ excludeUser, whispers }) => {
     return (
-        <div className="flex justify-center items-center flex-col max-w-screen-md m-auto divide-y divide-gray-800">
+        <div className="flex justify-center items-center flex-col max-w-screen-lg m-auto divide-y-2 divide-gray-700 lg:divide-y-0 lg:divide-x-2 lg:grid lg:grid-cols-3 gap-4 grid-flow-row-dense">
             {whispers.length === 0 ? (
                 <div>No Whispers</div>
             ) : (
