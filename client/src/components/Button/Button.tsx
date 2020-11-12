@@ -1,18 +1,19 @@
 import React from "react";
 
 interface IButtonProps {
-    looks: "main" | "ghost" | "danger";
-    title: string | React.FC | JSX.Element;
     disabled?: boolean;
+    looks: "main" | "ghost" | "danger";
     onClick?: any;
-    type?: "button" | "reset" | "submit" | undefined;
+    title: string | React.FC | JSX.Element;
+    type?: "button" | "reset" | "submit";
 }
 
-const Button: React.VFC<IButtonProps> = ({
+const Button: React.FC<IButtonProps> = ({
+    disabled,
     looks,
     title,
-    disabled,
-    ...rest
+    type,
+    ...props
 }) => {
     let twStyle: string;
     const basic =
@@ -47,7 +48,7 @@ const Button: React.VFC<IButtonProps> = ({
         twStyle = basic + "bg-gray-500 text-gray-400 cursor-default";
     }
     return (
-        <button className={twStyle} {...rest}>
+        <button className={twStyle} disabled={disabled} type={type} {...props}>
             {title}
         </button>
     );
