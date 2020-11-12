@@ -58,16 +58,16 @@ const UserProfile: React.FC<IUserProfileProps> = ({
                     onClick={() => updateEditModal(!editModal)}
                 />
             </Container>
-            {editModal && <EditProfile setModalStatus={updateEditModal} />}
-            {imageModal && (
-                <ChangeImageProfile setModalStatus={updateImageModal} />
-            )}
             {loading === "pending" ? (
                 <Loading />
             ) : loading === "error" && error !== "" ? (
                 <div>{error}</div>
             ) : (
                 <WhispersList whispers={whispers} excludeUser={true} />
+            )}
+            {editModal && <EditProfile setModalStatus={updateEditModal} />}
+            {imageModal && (
+                <ChangeImageProfile setModalStatus={updateImageModal} />
             )}
         </div>
     );
