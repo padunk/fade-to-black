@@ -1,11 +1,14 @@
 module.exports = {
-    purge: [
-        "src/**/*.js",
-        "src/**/*.jsx",
-        "src/**/*.ts",
-        "src/**/*.tsx",
-        "public/**/*.html",
-    ],
+    purge: {
+        enabled: process.env.NODE_ENV === "production" ? true : false,
+        content: [
+            "src/**/*.js",
+            "src/**/*.jsx",
+            "src/**/*.ts",
+            "src/**/*.tsx",
+            "public/**/*.html",
+        ],
+    },
     theme: {
         height: (theme) => ({
             auto: "auto",
