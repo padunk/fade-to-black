@@ -6,6 +6,7 @@ import TextAreaField from "../InputField/TextAreaField";
 import Container from "../Container/Container";
 import ModalHeader from "./components/ModalHeader";
 import Close from "./components/Close";
+import ModalContainer from "./components/ModalContainer";
 
 const AddCommentSchema = Yup.object().shape({
     body: Yup.string()
@@ -27,11 +28,8 @@ const AddComment: React.FC<IAddCommentProps> = ({
     submitNewComment,
 }) => {
     return (
-        <div
-            className="absolute z-10 inset-0 bg-gray-800 flex justify-center items-center bg-opacity-75"
-            style={{ backdropFilter: "blur(35px)" }}
-        >
-            <Close openModal={setModalStatus} />
+        <ModalContainer>
+            <Close closeModal={setModalStatus} />
             <Container className="flex-col">
                 <ModalHeader title={"Add Comment"} />
                 <Formik
@@ -65,7 +63,7 @@ const AddComment: React.FC<IAddCommentProps> = ({
                     )}
                 </Formik>
             </Container>
-        </div>
+        </ModalContainer>
     );
 };
 

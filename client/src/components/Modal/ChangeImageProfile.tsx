@@ -1,15 +1,16 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { connect } from "react-redux";
+import { RootState } from "types";
 import Button from "../Button/Button";
-import Container from "../Container/Container";
-import ModalHeader from "./components/ModalHeader";
 import Close from "./components/Close";
+import ModalContainer from "./components/ModalContainer";
+import ModalHeader from "./components/ModalHeader";
 import FileInputField from "../InputField/FileInputField";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { uploadAvatar } from "../../redux/actions/userActions";
-import { connect } from "react-redux";
-import { RootState } from "types";
+import { useHistory } from "react-router-dom";
 
 const FILE_SIZE = 2000 * 1024; // 2mb
 const SUPPORTED_FORMAT_IMAGES = ["image/jpg", "image/jpeg", "image/png"];
@@ -36,19 +37,15 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
     loading,
     setModalStatus,
     uploadAvatar,
+    userName,
 }) => {
     const [file, setFile] = React.useState<Blob | string>("");
+    const history = useHistory();
 
     return (
-        <div
-            className="absolute z-10 inset-0 bg-gray-800 flex justify-center items-center bg-opacity-75"
-            style={{
-                backdropFilter: "blur(35px)",
-                minHeight: "calc(100vh - 72px)",
-            }}
-        >
-            <Close openModal={setModalStatus} />
-            <Container className="flex-col">
+        <ModalContainer>
+            <Close closeModal={setModalStatus} />
+            <div className="-mt-56">
                 <ModalHeader title={"Change Image Profile"} />
                 <Formik
                     initialValues={{
@@ -64,11 +61,16 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
                                 values.imageProfile?.name
                             );
                         }
-                        uploadAvatar(imageData, setModalStatus);
+                        uploadAvatar(
+                            imageData,
+                            setModalStatus,
+                            history,
+                            userName!
+                        );
                     }}
                 >
                     {({ isValid, dirty, setFieldValue }) => (
-                        <Form className="w-full px-8">
+                        <Form className="px-4">
                             <Field
                                 name="imageProfile"
                                 component={FileInputField}
@@ -91,8 +93,8 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
                         </Form>
                     )}
                 </Formik>
-            </Container>
-        </div>
+            </div>
+        </ModalContainer>
     );
 };
 
@@ -100,6 +102,7 @@ const mapStateToProps = (state: RootState) => {
     return {
         errorMessage: state.ui.errorMessage,
         loading: state.ui.loading,
+        userName: state.user.credentials?.userName,
     };
 };
 

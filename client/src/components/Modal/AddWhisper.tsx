@@ -7,6 +7,7 @@ import Container from "../Container/Container";
 import TextAreaField from "../InputField/TextAreaField";
 import ModalHeader from "./components/ModalHeader";
 import Close from "./components/Close";
+import ModalContainer from "./components/ModalContainer";
 
 const AddWhisperSchema = Yup.object().shape({
     body: Yup.string()
@@ -26,11 +27,8 @@ const AddComment: React.FC<IAddWhisperProps> = ({
     setModalStatus,
 }) => {
     return (
-        <div
-            className="absolute z-10 inset-0 bg-gray-800 flex justify-center items-center bg-opacity-75"
-            style={{ backdropFilter: "blur(35px)" }}
-        >
-            <Close openModal={setModalStatus} />
+        <ModalContainer>
+            <Close closeModal={setModalStatus} />
             <Container className="flex-col">
                 <ModalHeader title={"Add Whisper"} />
                 <Formik
@@ -62,7 +60,7 @@ const AddComment: React.FC<IAddWhisperProps> = ({
                     )}
                 </Formik>
             </Container>
-        </div>
+        </ModalContainer>
     );
 };
 

@@ -1,12 +1,13 @@
 import React from "react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
-import Button from "../Button/Button";
-import InputField from "../InputField/InputField";
 import { urlRegex } from "regex";
 import { connect } from "react-redux";
 import { RootState, UpdateUserProfile } from "types";
+import Button from "../Button/Button";
 import Close from "./components/Close";
+import InputField from "../InputField/InputField";
+import ModalContainer from "./components/ModalContainer";
 import ModalHeader from "./components/ModalHeader";
 import TextAreaField from "../InputField/TextAreaField";
 import { editProfile } from "../../redux/actions/userActions";
@@ -14,10 +15,10 @@ import { AnyAction, bindActionCreators, Dispatch } from "redux";
 
 const EditProfileSchema = Yup.object().shape({
     bio: Yup.string().trim().min(3, "Too short").max(160, "Too long"),
-    email: Yup.string().trim().email("Invalid email").defined(),
+    email: Yup.string().trim().email("Invalid email"),
     location: Yup.string().trim().min(2, "Too short").max(30, "Too long"),
     protocol: Yup.string(),
-    website: Yup.string().trim().url().matches(urlRegex, "Invalid URL address"),
+    website: Yup.string().trim().matches(urlRegex, "Invalid URL address"),
 });
 
 type IEditProfileProps = ReturnType<typeof mapStateToProps> &
@@ -31,14 +32,8 @@ const EditProfile: React.FC<IEditProfileProps> = ({
     user,
 }) => {
     return (
-        <div
-            className="absolute z-10 inset-0 bg-gray-800 flex flex-col justify-center items-center bg-opacity-75"
-            style={{
-                backdropFilter: "blur(30px)",
-                minHeight: "calc(100vh - 72px)",
-            }}
-        >
-            <Close openModal={setModalStatus} />
+        <ModalContainer>
+            <Close closeModal={setModalStatus} />
             <ModalHeader title={"Edit Profile"} />
             <Formik
                 initialValues={{
@@ -56,7 +51,7 @@ const EditProfile: React.FC<IEditProfileProps> = ({
                         location: values.location,
                         website: values.protocol + values.website,
                     };
-                    console.log(data);
+
                     editProfile(data);
                     setModalStatus(false);
                 }}
@@ -85,7 +80,7 @@ const EditProfile: React.FC<IEditProfileProps> = ({
                     </Form>
                 )}
             </Formik>
-        </div>
+        </ModalContainer>
     );
 };
 
