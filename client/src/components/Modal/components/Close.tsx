@@ -2,14 +2,14 @@ import React from "react";
 import { GrClose } from "react-icons/gr";
 
 type IOpenModalProps = {
-    openModal: React.Dispatch<React.SetStateAction<boolean>>;
+    closeModal: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Close: React.FC<IOpenModalProps> = ({ openModal }) => {
+const Close: React.FC<IOpenModalProps> = ({ closeModal }) => {
     return (
         <div
             className="absolute z-20 right-0 top-0 mt-8 mr-8 cursor-pointer text-orange-500 stroke-current"
-            onClick={() => openModal(false)}
+            onClick={() => closeModal(false)}
         >
             <div className="rounded-full bg-white p-2">
                 <GrClose className="text-orange-500 stroke-current w-6 md:w-8" />
