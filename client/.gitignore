@@ -24,6 +24,7 @@ yarn-error.log*
 
 # tailwind
 src/tailwind.output.css
+tailwind.config.example.js
 
 # fade-to-black
 !src/node_modules
