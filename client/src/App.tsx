@@ -1,11 +1,11 @@
 import React from "react";
+import Router from "./Router/Router";
 import { Provider } from "react-redux";
 import jwtDecode from "jwt-decode";
-import { _store } from "./redux/store";
-import Router from "./Router/Router";
-import * as type from "./redux/actions/constants";
 import { JwtToken } from "types";
 import { axios } from "./Axios";
+import { _store } from "./redux/store";
+import * as type from "./redux/actions/constants";
 import { getUserData, logOut } from "./redux/actions/userActions";
 
 function App() {
