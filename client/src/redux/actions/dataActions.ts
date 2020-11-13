@@ -90,9 +90,10 @@ export const likeWhisper = (whisperID: string) => async (
 ) => {
     try {
         const response = await axios.get(`/whisper/${whisperID}/like`);
+        const data = await response.data;
         dispatch({
             type: type.LIKE_WHISPER,
-            payload: (await response).data,
+            payload: data,
         });
     } catch (err) {
         console.log("err", err);
@@ -104,9 +105,10 @@ export const unlikeWhisper = (whisperID: string) => async (
 ) => {
     try {
         const response = await axios.get(`/whisper/${whisperID}/unlike`);
+        const data = await response.data;
         dispatch({
             type: type.UNLIKE_WHISPER,
-            payload: (await response).data,
+            payload: data,
         });
     } catch (err) {
         console.log("err", err);

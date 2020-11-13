@@ -7,10 +7,10 @@ import * as H from "history";
 export const getUserData = () => async (dispatch: Dispatch): Promise<void> => {
     try {
         const response = await axios.get("/user");
-
+        const data = await response.data;
         dispatch({
             type: type.SET_USER,
-            payload: (await response).data,
+            payload: data,
         });
     } catch (err) {
         console.log("getUserDataError :>> ", err);
