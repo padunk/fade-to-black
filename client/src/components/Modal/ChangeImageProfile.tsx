@@ -1,16 +1,26 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { gsap } from "gsap";
+import { TextPlugin } from "gsap/TextPlugin";
 import { connect } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { RootState } from "types";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import Button from "../Button/Button";
 import Close from "./components/Close";
 import ModalContainer from "./components/ModalContainer";
 import ModalHeader from "./components/ModalHeader";
 import FileInputField from "../InputField/FileInputField";
-import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { uploadAvatar } from "../../redux/actions/userActions";
-import { useHistory } from "react-router-dom";
+
+gsap.registerPlugin(TextPlugin);
+const timeline = gsap.timeline({
+    repeat: Infinity,
+    repeatDelay: 1,
+    ease: "power2",
+    yoyo: true,
+});
 
 const FILE_SIZE = 2000 * 1024; // 2mb
 const SUPPORTED_FORMAT_IMAGES = ["image/jpg", "image/jpeg", "image/png"];
@@ -41,12 +51,32 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
 }) => {
     const [file, setFile] = React.useState<Blob | string>("");
     const history = useHistory();
+    const { current: tl } = React.useRef(timeline);
+    const { current: uploadProgressElement } = React.useRef(null);
+
+    React.useEffect(() => {
+        tl.to(uploadProgressElement, {
+            duration: 0.5,
+            text: "Uploading image.",
+        })
+            .to(uploadProgressElement, {
+                duration: 0.5,
+                text: "Uploading image..",
+            })
+            .to(uploadProgressElement, {
+                duration: 0.5,
+                text: "Uploading image...",
+            });
+    }, []);
 
     return (
         <ModalContainer>
             <Close closeModal={setModalStatus} />
             <div className="-mt-56">
                 <ModalHeader title={"Change Image Profile"} />
+                {loading && (
+                    <div ref={uploadProgressElement}>Uploading image</div>
+                )}
                 <Formik
                     initialValues={{
                         imageProfile: File,
@@ -76,6 +106,7 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
                                 component={FileInputField}
                                 setFieldValue={setFieldValue}
                                 setFile={setFile}
+                                disabled={loading}
                             />
                             <div className="my-2">
                                 <Button
