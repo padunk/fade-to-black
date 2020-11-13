@@ -43,6 +43,9 @@ module.exports = {
             "11/12": "91.666667%",
         }),
     },
-    variants: {},
+    variants: {
+        backgroundColor: ({ after }) => after(["disabled"]),
+        textColor: ({ after }) => after(["disabled"]),
+    },
     plugins: [],
 };
