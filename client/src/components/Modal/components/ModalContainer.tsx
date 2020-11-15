@@ -14,7 +14,7 @@ const ModalContainer: React.FC<IModalContainerProps> = ({ children }) => {
             duration: 1,
             opacity: 0.1,
         });
-    }, []);
+    }, [tl]);
 
     return (
         <div
