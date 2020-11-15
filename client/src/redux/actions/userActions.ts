@@ -158,8 +158,7 @@ export const editProfile = (data: UpdateUserProfile) => async (
 export const uploadAvatar = (
     imageData: FormData,
     setModalStatus: React.Dispatch<React.SetStateAction<boolean>>,
-    history: H.History,
-    userName: string
+    history: H.History
 ) => async (dispatch: Dispatch): Promise<void> => {
     dispatch({
         type: type.LOADING,
@@ -167,15 +166,21 @@ export const uploadAvatar = (
     try {
         const response = await axios.post("/user/image", imageData);
         const data = await response.data;
+        // since we save the image with the same name on the storage
+        // Redux didn't know about this, so we set it to empty string first.
         dispatch({
             type: type.USER_IMAGE_CHANGED,
-            payload: data.imageURL,
+            payload: "",
         });
         dispatch({
             type: type.LOADED,
         });
         setModalStatus(false);
-        history.push(`/profile/user/${userName}`);
+        // save the image URL again.
+        dispatch({
+            type: type.USER_IMAGE_CHANGED,
+            payload: data.imageURL,
+        });
     } catch (err) {
         dispatch({
             type: type.SET_ERROR,

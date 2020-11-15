@@ -4,7 +4,6 @@ import * as Yup from "yup";
 import { gsap } from "gsap";
 import { TextPlugin } from "gsap/TextPlugin";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { RootState } from "types";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import Button from "../Button/Button";
@@ -13,14 +12,9 @@ import ModalContainer from "./components/ModalContainer";
 import ModalHeader from "./components/ModalHeader";
 import FileInputField from "../InputField/FileInputField";
 import { uploadAvatar } from "../../redux/actions/userActions";
+import { useHistory } from "react-router-dom";
 
 gsap.registerPlugin(TextPlugin);
-const timeline = gsap.timeline({
-    repeat: Infinity,
-    repeatDelay: 1,
-    ease: "power2",
-    yoyo: true,
-});
 
 const FILE_SIZE = 2000 * 1024; // 2mb
 const SUPPORTED_FORMAT_IMAGES = ["image/jpg", "image/jpeg", "image/png"];
@@ -49,25 +43,30 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
     uploadAvatar,
     userName,
 }) => {
+    const timeline = gsap.timeline({
+        repeat: Infinity,
+        repeatDelay: 1,
+    });
+
     const [file, setFile] = React.useState<Blob | string>("");
     const history = useHistory();
     const { current: tl } = React.useRef(timeline);
-    const { current: uploadProgressElement } = React.useRef(null);
+    const uploadProgressElement = React.useRef(null);
 
     React.useEffect(() => {
-        tl.to(uploadProgressElement, {
+        tl.to(uploadProgressElement.current, {
             duration: 0.5,
             text: "Uploading image.",
         })
-            .to(uploadProgressElement, {
+            .to(uploadProgressElement.current, {
                 duration: 0.5,
                 text: "Uploading image..",
             })
-            .to(uploadProgressElement, {
+            .to(uploadProgressElement.current, {
                 duration: 0.5,
                 text: "Uploading image...",
             });
-    }, []);
+    }, [tl, uploadProgressElement]);
 
     return (
         <ModalContainer>
@@ -75,7 +74,12 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
             <div className="-mt-56">
                 <ModalHeader title={"Change Image Profile"} />
                 {loading && (
-                    <div ref={uploadProgressElement}>Uploading image</div>
+                    <p
+                        ref={uploadProgressElement}
+                        className="text-sm text-center m-0 mb-2"
+                    >
+                        Uploading image
+                    </p>
                 )}
                 <Formik
                     initialValues={{
@@ -91,12 +95,7 @@ const ChangeImageProfile: React.FC<IAddWhisperProps> = ({
                                 values.imageProfile?.name
                             );
                         }
-                        uploadAvatar(
-                            imageData,
-                            setModalStatus,
-                            history,
-                            userName!
-                        );
+                        uploadAvatar(imageData, setModalStatus, history);
                     }}
                 >
                     {({ isValid, dirty, setFieldValue }) => (
